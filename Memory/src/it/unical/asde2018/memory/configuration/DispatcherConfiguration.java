@@ -37,7 +37,7 @@ public class DispatcherConfiguration implements WebMvcConfigurer {
 		LocalSessionFactoryBean lsfb = new LocalSessionFactoryBean();
 		lsfb.setDataSource(getDataSource());
 		lsfb.setHibernateProperties(getHibernateProperties());
-		lsfb.setPackagesToScan("it.unical.asde2018.Memory.model");
+		lsfb.setPackagesToScan("it.unical.asde2018.memory.model");
 
 		try {
 			lsfb.afterPropertiesSet();
