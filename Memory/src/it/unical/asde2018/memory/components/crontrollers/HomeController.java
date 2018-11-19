@@ -39,6 +39,8 @@ public class HomeController {
 	private String login(Model model, HttpSession session, @RequestParam String username,
 			@RequestParam String password) {
 		if (loginService.login(username, password)) {
+			model.addAttribute("username", username);
+			session.setAttribute("username", username);
 //			model.addAttribute("username", username);
 //			session.setAttribute("username", username);
 //			loginService.setCredentials(username, password);ù
