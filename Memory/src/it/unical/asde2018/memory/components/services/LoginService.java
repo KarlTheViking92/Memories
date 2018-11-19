@@ -15,4 +15,8 @@ public class LoginService {
 
 		return credentialsDAO.exists(new Credentials(username, password));
 	}
+
+	public void setCredentials(String username, String password) {
+		credentialsDAO.save(new Credentials(username, password));
+	}
 }
