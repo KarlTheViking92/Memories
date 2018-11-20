@@ -1,6 +1,7 @@
 package it.unical.asde2018.memory.model;
 
 public class User {
+
 	private String username;
 
 	public User(String username) {

@@ -9,25 +9,30 @@
 					class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="#">Login dropdown</a>
+			<a class="navbar-brand" href="${pageContext.request.contextPath}/">MEMORY
+				GAME</a>
 		</div>
-
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="#">Link</a></li>
-				<li><a href="#">Link</a></li>
+				<li class="active"><a
+					href="${pageContext.request.contextPath}/">Home</a></li>
+				<c:if test="${username != null}">
+					<li><a href="${pageContext.request.contextPath}/matchHistory">Match
+							history</a></li>
+				</c:if>
 				<li class="dropdown"><a href="#" class="dropdown-toggle"
-					data-toggle="dropdown">Dropdown <span class="caret"></span></a>
+					data-toggle="dropdown">More<span class="caret"></span></a>
 					<ul class="dropdown-menu" role="menu">
-						<li><a href="#">Action</a></li>
-						<li><a href="#">Another action</a></li>
+						<li><a href="${pageContext.request.contextPath}//joinLobby">Join
+								a lobby</a></li>
+						<li><a href="#">Create a lobby</a></li>
 						<li><a href="#">Something else here</a></li>
 						<li class="divider"></li>
-						<li><a href="#">Separated link</a></li>
+						<li><a href="#">Match history</a></li>
 						<li class="divider"></li>
-						<li><a href="#">One more separated link</a></li>
+						<li><a href="${pageContext.request.contextPath}/rules">Rules</a></li>
 					</ul></li>
 			</ul>
 			<form class="navbar-form navbar-left" role="search">
@@ -36,25 +41,15 @@
 				</div>
 				<button type="submit" class="btn btn-default">Submit</button>
 			</form>
-
-
-
 			<%-- <c:if test="${username == null}">
-				<a href="${pageContext.request.contextPath}/login">Login</a>
-			</c:if>
-			<c:if test="${username != null}">
-	 Hello ${username} | <a
-					href="${pageContext.request.contextPath}/logout">Logout</a>
-			</c:if> --%>
-
-
-
-
-
-
+		<a href="${pageContext.request.contextPath}/login">Login</a>
+	</c:if>
+	<c:if test="${username != null}">
+Hello ${username} | <a
+			href="${pageContext.request.contextPath}/logout">Logout</a>
+	</c:if> --%>
 			<c:if test="${username == null}">
 				<%-- <a href="${pageContext.request.contextPath}/login">Login</a> --%>
-
 				<ul class="nav navbar-nav navbar-right">
 					<li><p class="navbar-text">Already have an account?</p></li>
 					<li class="dropdown"><a href="#" class="dropdown-toggle"
@@ -100,7 +95,6 @@
 													</button>
 													<strong>${errorLogin}</strong>
 												</div>
-
 											</c:if>
 										</form>
 									</div>
@@ -126,7 +120,6 @@
 												<input type="password" class="form-control"
 													id="exampleInputPassword2" placeholder="Password"
 													name="password" required>
-
 											</div>
 											<div class="form-group">
 												<button type="submit" class="btn btn-primary btn-block">Sign
@@ -146,10 +139,8 @@
 													</button>
 													<strong>${errorRegistration}</strong>
 												</div>
-
 											</c:if>
 										</form>
-
 									</div>
 									<div class="bottom text-center">
 										Already a member ? <a href="#" id="login-form-link"><b>Go
@@ -161,13 +152,13 @@
 				</ul>
 			</c:if>
 			<c:if test="${username != null}">
-			 |
-			<ul class="nav navbar-nav navbar-right">
-					<li><p class="navbar-text">Hello ${username}</p></li>
+				<ul class="nav navbar-nav navbar-right">
+					<li><p class="navbar-text">
+							<font color="white">Welcome ${username}</font>
+						</p></li>
 					<li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
 				</ul>
 			</c:if>
-
 		</div>
 		<!-- /.navbar-collapse -->
 	</div>

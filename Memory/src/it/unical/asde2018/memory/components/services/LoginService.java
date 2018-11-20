@@ -8,11 +8,11 @@ import it.unical.asde2018.memory.model.Credentials;
 
 @Service
 public class LoginService {
+
 	@Autowired
 	private CredentialsDAO credentialsDAO;
 
 	public boolean login(String username, String password) {
-
 		return credentialsDAO.exists(new Credentials(username, password));
 	}
 
