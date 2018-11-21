@@ -16,15 +16,28 @@
 	<c:forEach items="${lobbies}" var="lobby">
 		<div class="product-preview-container">
 			<ul>
-				<!--li><img src="resources/AceQ.png" height="65" width="65" alt="${product.name}"></li!-->
 				<li>Lobby: ${lobby.name}</li>
-				<li>Players: ${lobby.size}</li>
-				<li><a
-					href="${pageContext.request.contextPath}/joinLobby?lobby=${lobby.name}">Join
-						Lobby</a></li>
-			</ul>
+				<li>Size: ${lobby.players.size()}</li>		
+				<li>Players:		
+				<c:forEach items="${lobby.players}" var="player">
+				user: ${player.username}
+				</c:forEach>
+				</li>
+				<li><a href="${pageContext.request.contextPath}/joinLobby?lobby=${lobby.name}">
+					Join Lobby</a></li>
+					
+				<c:if test="${lobby.players.size() gt 1}">
+				<li><a href="${pageContext.request.contextPath}/leaveLobby?lobby=${lobby.name}">
+					Leave lobby</a></li> 
+				</c:if>
+				<c:if test="${lobby.players.size() gt 1  }"> <!-- and player.creator -->
+				<li><a href="${pageContext.request.contextPath}/startGame">
+					Start Game</a></li> 
+				</c:if>
+			</ul> 
 		</div>
 	</c:forEach>
+	
 	<c:if test="${not empty errorLobby}">
 		<div class="alert alert-danger alert-dismissible" role="alert">
 			<button type="button" class="close" data-dismiss="alert"
