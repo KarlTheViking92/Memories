@@ -9,7 +9,7 @@ import it.unical.asde2018.memory.model.Lobby;
 
 @Service
 public class LobbyService {
-	
+		
 	public Set<Lobby> lobbies = new HashSet<>();
 	
 	@PostConstruct
@@ -40,7 +40,8 @@ public class LobbyService {
 		}		
 	}
 	
-	public boolean fullLoby(String name) {
+	//Cambio Nome funzione 
+	public boolean notFullLoby(String name) {
 		for (Lobby inserted : lobbies) {
 			if(inserted.getName().equals(name)) {
 				if(inserted.full()) {

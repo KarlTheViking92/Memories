@@ -1,7 +1,5 @@
 package it.unical.asde2018.memory.components.persistence;
 
-import javax.annotation.PostConstruct;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -17,25 +15,22 @@ public class CredentialsDAO {
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	@PostConstruct
-	public void init() {
-	}
+
 
 	public void save(Credentials credentials) {
 		Session session = sessionFactory.openSession();
-
+		
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
 			session.save(credentials);
 			tx.commit();
-
 		} catch (Exception e) {
 			tx.rollback();
 		}
 		session.close();
-
 	}
+
 
 	public boolean exists(Credentials credentials) {
 		Session openSession = sessionFactory.openSession();
@@ -45,6 +40,17 @@ public class CredentialsDAO {
 
 		boolean result = query.uniqueResult() != null;
 		openSession.close();
+		return result;
+	}
+
+	public boolean yetAnUser(String username) {
+		Session session = sessionFactory.openSession();
+
+		Query<Credentials> query = session.createQuery("from Credentials as c where c.username=:u", Credentials.class)
+				.setParameter("u", username);
+
+		boolean result = query.uniqueResult() != null;
+		
 		return result;
 	}
 

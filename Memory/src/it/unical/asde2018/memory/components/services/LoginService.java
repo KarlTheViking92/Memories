@@ -11,7 +11,11 @@ public class LoginService {
 
 	@Autowired
 	private CredentialsDAO credentialsDAO;
-
+	
+	public boolean yetAnUser(String username) {
+		return credentialsDAO.yetAnUser(username);
+	}
+	
 	public boolean login(String username, String password) {
 		return credentialsDAO.exists(new Credentials(username, password));
 	}
@@ -19,4 +23,6 @@ public class LoginService {
 	public void setCredentials(String username, String password) {
 		credentialsDAO.save(new Credentials(username, password));
 	}
+	
+	
 }
