@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import it.unical.asde2018.memory.components.services.LobbyService;
 import it.unical.asde2018.memory.components.services.LoginService;
+import it.unical.asde2018.memory.model.User;
 
 @Controller
 public class HomeController {
@@ -20,6 +21,9 @@ public class HomeController {
 	private LoginService loginService;
 	@Autowired
 	private LobbyService lobbyService;
+
+	private User user;
+	private String username;
 
 	@GetMapping("/")
 	private String goToIndex(Model model, HttpSession session) {
@@ -30,10 +34,10 @@ public class HomeController {
 	private String registration(Model model, HttpSession session, @RequestParam String username,
 			@RequestParam String password) {
 		if (!loginService.login(username, password)) {
+			loginService.setCredentials(username, password);
 			model.addAttribute("username", username);
 			session.setAttribute("username", username);
 			model.addAttribute("lobbies", lobbyService.getLobbies());
-			loginService.setCredentials(username, password);
 			return "lobby";
 		} else
 			model.addAttribute("errorRegistration", "Wrong credentials registration!");
@@ -72,19 +76,23 @@ public class HomeController {
 
 	@RequestMapping("/createLobby")
 	public String createLobby(@RequestParam String name, HttpSession session, Model model) {
-		lobbyService.createLobby(name);
+		username = (String) session.getAttribute("username");
+		user = new User(username, true);
+		lobbyService.createLobby(name, user);
+		// System.out.println(user);
 		model.addAttribute("lobbies", lobbyService.getLobbies());
 		return "lobby";
 	}
 
 	@RequestMapping({ "/joinLobby" })
-	public String joinLobby(HttpServletRequest request, Model model,
+	public String joinLobby(HttpServletRequest request, HttpSession session, Model model,
 			@RequestParam(value = "lobby", defaultValue = "") String name) {
-		System.out.println(name);
-		// lobbyService.joinLobby(name);
-		if (lobbyService.fullLoby(name)) {
-			lobbyService.joinLobby(name);
+		if (lobbyService.notFullLoby(name)) {
+			username = (String) session.getAttribute("username");
+			// user = new User(username, true);
+			lobbyService.joinLobby(name, user);
 			model.addAttribute("lobbies", lobbyService.getLobbies());
+			model.addAttribute("userGuest", username);
 			// session
 			return "lobby";
 		} else {
@@ -92,5 +100,20 @@ public class HomeController {
 			model.addAttribute("lobbies", lobbyService.getLobbies());
 		}
 		return "lobby";
+	}
+
+	@RequestMapping({ "/leaveLobby" })
+	public String leaveLobby(HttpServletRequest request, HttpSession session, Model model,
+			@RequestParam(value = "lobby", defaultValue = "") String name) {
+		username = (String) session.getAttribute("username");
+		lobbyService.leaveLobby(name, user);
+		model.addAttribute("lobbies", lobbyService.getLobbies());
+
+		return "lobby";
+	}
+
+	@RequestMapping({ "/startGame" })
+	public String joinLobby(HttpServletRequest request, HttpSession session, Model model) {
+		return "game";
 	}
 }
