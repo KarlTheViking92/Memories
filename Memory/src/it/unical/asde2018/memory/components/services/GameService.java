@@ -35,18 +35,23 @@ public class GameService {
 				
 		g1.addPlayer(p1);
 		g1.addPlayer(p2);
+		g1.setWinner(p1.getUsername());
 		
 		g2.addPlayer(p2);
 		g2.addPlayer(p3);
+		g2.setWinner(p2.getUsername());
 		
 		g3.addPlayer(p1);
 		g3.addPlayer(p3);
+		g3.setWinner(p1.getUsername());
+		
+		System.out.println("PORCELLO------"+p2.getId());
 		
 		gameDAO.saveGame(g1);
 		gameDAO.saveGame(g2);
 		gameDAO.saveGame(g3);
 		
-		return gameDAO.getGamesOfAUser(p1);
+		return gameDAO.getGamesOfAUser(p2);
 	}
 	
 	public Game createGame(String name) {

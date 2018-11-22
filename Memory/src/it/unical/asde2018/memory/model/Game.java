@@ -37,8 +37,16 @@ public class Game {
 	@Column(nullable = false)
 	private String name;
 	
-//	@Column(nullable=false)
-//	private Player winner;
+	@Column(nullable=false)
+	private String winner;
+
+	public String getWinner() {
+		return winner;
+	}
+
+	public void setWinner(String winner) {
+		this.winner = winner;
+	}
 
 	public String getName() {
 		return name;
@@ -55,6 +63,7 @@ public class Game {
 	public Game(String name) {
 		players = new ArrayList<Player>();
 		this.name = name;
+		winner=null;
 	}
 
 	public long getId() {

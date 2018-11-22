@@ -14,6 +14,7 @@
 	
 	<c:forEach items="${games}" var="i">
 		<h1>"${i.getName()}"</h1>
+		<h3>"${i.getWinner()}"</h3>
 	</c:forEach>
 	
 </body>
