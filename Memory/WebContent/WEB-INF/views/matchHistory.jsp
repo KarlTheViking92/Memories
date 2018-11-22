@@ -13,7 +13,7 @@
 	<h1>Match History</h1>
 	
 	<c:forEach items="${games}" var="i">
-		"${i.getName()}"
+		<h1>"${i.getName()}"</h1>
 	</c:forEach>
 	
 </body>
