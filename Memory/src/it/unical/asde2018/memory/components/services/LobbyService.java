@@ -19,9 +19,9 @@ public class LobbyService {
 
 	@PostConstruct
 	public void init() {
-		lobbies.add(new Lobby("Saturn", new User("alex", true)));
-		lobbies.add(new Lobby("Venus", new User("ciccio", true)));
-		lobbies.add(new Lobby("Mars", new User("giggino", true)));
+		lobbies.add(new Lobby("Saturn", new User("alex", "123")));
+		lobbies.add(new Lobby("Venus", new User("ciccio", "ff")));
+		lobbies.add(new Lobby("Mars", new User("giggino", "M")));
 	}
 
 	public Set<Lobby> getLobbies() {
@@ -83,8 +83,11 @@ public class LobbyService {
 		for (Lobby inserted : lobbies) {
 			if (inserted.getName().equals(name)) {
 				inserted.leaveLobby(user);
-				// if (inserted.creatorLobby(user))
-				// removeLobby(name);
+				if (inserted.creatorLobby(user))
+					removeLobby(name);
+//				if (inserted.getLobbySize() < 1) {
+//					removeLobby(name);
+//				}
 			}
 		}
 	}
@@ -93,7 +96,6 @@ public class LobbyService {
 		for (Lobby inserted : lobbies) {
 			if (inserted.getName().equals(name)) {
 				lobbies.remove(inserted);
-				return;
 			}
 		}
 	}

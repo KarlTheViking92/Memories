@@ -22,8 +22,6 @@ public class HomeController {
 	@Autowired
 	private LobbyService lobbyService;
 
-	private String username;
-
 	@GetMapping("/")
 	private String goToIndex(Model model, HttpSession session) {
 		return "index";
@@ -34,14 +32,14 @@ public class HomeController {
 			@RequestParam String password) {
 		if (!loginService.login(username, password)) {
 			loginService.setCredentials(username, password);
-			model.addAttribute("username", username);
-			session.setAttribute("username", username);
-			User user = new User(username, false);
-			session.setAttribute("user", user);
-			model.addAttribute("lobbies", lobbyService.getLobbies());
-			return "lobby";
+			// model.addAttribute("username", username);
+			// session.setAttribute("username", username);
+			// User user = new User(username, false);
+			// session.setAttribute("user", user);
+			// model.addAttribute("lobbies", lobbyService.getLobbies());
+			model.addAttribute("errorRegistration", username + " you are now registed, you can Sign in");
 		} else
-			model.addAttribute("errorRegistration", "Wrong credentials registration!");
+			model.addAttribute("errorRegistration", username + " has already been chosen has username");
 		return "index";
 	}
 
@@ -49,9 +47,10 @@ public class HomeController {
 	private String login(Model model, HttpSession session, @RequestParam String username,
 			@RequestParam String password) {
 		if (loginService.login(username, password)) {
-			model.addAttribute("username", username);
+			// model.addAttribute("username", username);
+			// SEE WHERE WE NEED USERNAME AND CHANGE IT TO USER.USERNAME
 			session.setAttribute("username", username);
-			User user = new User(username, false);
+			User user = new User(username, password);
 			session.setAttribute("user", user);
 			model.addAttribute("lobbies", lobbyService.getLobbies());
 			return "lobby";
@@ -67,20 +66,14 @@ public class HomeController {
 		return "index";
 	}
 
-	@RequestMapping("/rules")
-	public String rules(HttpSession session, Model model) {
-		return "rules";
-	}
-
-	@RequestMapping("/matchHistory")
-	public String matchHistory(HttpSession session, Model model) {
-		return "matchHistory";
-	}
-
 	@RequestMapping("/createLobby")
 	public String createLobby(@RequestParam String name, HttpSession session, Model model) {
-		username = (String) session.getAttribute("username");
-		User user = new User(username, true);
+
+		// User user = new User(username, true);
+
+		// YOU HAVE TO SET THAT USER IS THE CREATOR
+		User user = (User) session.getAttribute("user");
+		user.setCreator(true);
 		session.setAttribute("user", user);
 		lobbyService.createLobby(name, user);
 		// System.out.println(user);
@@ -92,8 +85,6 @@ public class HomeController {
 	public String joinLobby(HttpServletRequest request, HttpSession session, Model model,
 			@RequestParam(value = "lobby", defaultValue = "") String name) {
 		if (lobbyService.notFullLoby(name)) {
-			username = (String) session.getAttribute("username");
-			// user = new User(username, true);
 			User user = (User) session.getAttribute("user");
 			lobbyService.joinLobby(name, user);
 			model.addAttribute("lobbies", lobbyService.getLobbies());
@@ -109,9 +100,7 @@ public class HomeController {
 	@RequestMapping({ "/leaveLobby" })
 	public String leaveLobby(HttpServletRequest request, HttpSession session, Model model,
 			@RequestParam(value = "lobby", defaultValue = "") String name) {
-		username = (String) session.getAttribute("username");
 		User user = (User) session.getAttribute("user");
-		lobbyService.joinLobby(name, user);
 		lobbyService.leaveLobby(name, user);
 		model.addAttribute("lobbies", lobbyService.getLobbies());
 
@@ -121,5 +110,15 @@ public class HomeController {
 	@RequestMapping({ "/startGame" })
 	public String joinLobby(HttpServletRequest request, HttpSession session, Model model) {
 		return "game";
+	}
+
+	@RequestMapping("/rules")
+	public String rules(HttpSession session, Model model) {
+		return "rules";
+	}
+
+	@RequestMapping("/matchHistory")
+	public String matchHistory(HttpSession session, Model model) {
+		return "matchHistory";
 	}
 }

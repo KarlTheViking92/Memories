@@ -9,7 +9,7 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import it.unical.asde2018.memory.model.Credentials;
+import it.unical.asde2018.memory.model.User;
 
 @Repository
 public class CredentialsDAO {
@@ -21,7 +21,7 @@ public class CredentialsDAO {
 	public void init() {
 	}
 
-	public void save(Credentials credentials) {
+	public void save(User credentials) {
 		Session session = sessionFactory.openSession();
 
 		Transaction tx = null;
@@ -37,11 +37,10 @@ public class CredentialsDAO {
 
 	}
 
-	public boolean exists(Credentials credentials) {
+	public boolean exists(User user) {
 		Session openSession = sessionFactory.openSession();
-		Query<Credentials> query = openSession
-				.createQuery("from Credentials as c where c.username=:u and c.password=:p", Credentials.class)
-				.setParameter("u", credentials.getUsername()).setParameter("p", credentials.getPassword());
+		Query<User> query = openSession.createQuery("from User as u where u.username=:u and u.password=:p", User.class)
+				.setParameter("u", user.getUsername()).setParameter("p", user.getPassword());
 
 		boolean result = query.uniqueResult() != null;
 		openSession.close();

@@ -47,13 +47,21 @@ public class Lobby {
 	}
 
 	public void leaveLobby(User user) {
-		// controllo che nn ci sonoi già
 		players.remove(user);
 
 	}
 
 	public boolean creatorLobby(User user) {
+		System.out.println(user + " " + user.getUsername() + " " + user.isCreator());
 		return user.isCreator();
 	}
 
+	public boolean alreadyInLobby(User user) {
+		for (User inserted : players) {
+			if (inserted.equals(user)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
