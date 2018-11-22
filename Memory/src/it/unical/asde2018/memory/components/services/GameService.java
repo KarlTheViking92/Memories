@@ -3,12 +3,11 @@ package it.unical.asde2018.memory.components.services;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import it.unical.asde2018.memory.components.persistence.GameDAO;
+import it.unical.asde2018.memory.components.persistence.PlayerDAO;
 import it.unical.asde2018.memory.model.Game;
 import it.unical.asde2018.memory.model.Player;
 
@@ -17,6 +16,9 @@ public class GameService {
 
 	@Autowired
 	private GameDAO gameDAO;
+	
+	@Autowired
+	private PlayerDAO playerDAO;
 	
 	private List<Game> games;
 
@@ -28,7 +30,11 @@ public class GameService {
 		Player p1= new Player("ciccio");
 		Player p2= new Player("pippo");
 		Player p3= new Player("pluto");
-
+		
+		playerDAO.savePlayer(p1);
+		playerDAO.savePlayer(p2);
+		playerDAO.savePlayer(p3);
+		
 		Game g1 = createGame("Partita Uno");
 		Game g2 = createGame("Partita Due");
 		Game g3 = createGame("Partita Tre");
@@ -44,9 +50,7 @@ public class GameService {
 		g3.addPlayer(p1);
 		g3.addPlayer(p3);
 		g3.setWinner(p1.getUsername());
-		
-		System.out.println("PORCELLO------"+p2.getId());
-		
+				
 		gameDAO.saveGame(g1);
 		gameDAO.saveGame(g2);
 		gameDAO.saveGame(g3);

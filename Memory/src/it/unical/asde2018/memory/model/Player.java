@@ -27,6 +27,10 @@ public class Player {
 	@Column
 	private String username;
 	
+	public Player() {
+		super();
+	}
+	
 	public Player(String username) {
 		super();
 		this.username = username;

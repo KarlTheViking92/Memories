@@ -1,5 +1,7 @@
 package it.unical.asde2018.memory.components.controllers;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import it.unical.asde2018.memory.components.persistence.PlayerDAO;
 import it.unical.asde2018.memory.components.services.GameService;
 import it.unical.asde2018.memory.components.services.LobbyService;
 import it.unical.asde2018.memory.components.services.LoginService;
@@ -75,7 +78,11 @@ public class HomeController {
 	@RequestMapping("/matchHistory")
 	public String matchHistory(HttpSession session, Model model) {
 		model.addAttribute("games", gameService.init());
-		//System.out.println(gameService.init().size());
+		List<Player> list = loginService.getAllUsers();
+		System.out.println("__________-----__----"+list.size());
+		for (Player player : list) {
+			System.out.println(player.getUsername());
+		}
 		return "matchHistory";
 	}
 
