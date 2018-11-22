@@ -12,11 +12,9 @@
 	<jsp:include page="navbar.jsp" />
 	<h1>Match History</h1>
 	
-	<h1>ciccio</h1>
 	<c:forEach items="${games}" var="i">
-		<h1>ciccciop</h1>
 		"${i.getName()}"
 	</c:forEach>
-	<h1>ciccio2</h1>
+	
 </body>
 </html>

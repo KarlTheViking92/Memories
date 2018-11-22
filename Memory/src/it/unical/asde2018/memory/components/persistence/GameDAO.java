@@ -41,10 +41,10 @@ public class GameDAO {
 		Session session = sessionFactory.openSession();
 		
 
-		Query<Game> query = session.createQuery("select g from Game g join g.players p where g.id = :user", Game.class)
-				.setParameter("user", player.getId());
+		Query<Game> query = session.createQuery("select g from Game g join g.players p where p.id = :userId", Game.class)
+				.setParameter("userId", player.getId());
 
-		List<Game> result = query.getResultList();
+		List<Game> result = query.list();
 		session.close();
 		return result;
 	}
