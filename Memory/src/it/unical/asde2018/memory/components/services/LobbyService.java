@@ -37,7 +37,7 @@ public class LobbyService {
 			if (lobby.getName().equals(name))
 				return lobby;
 		}
-		// verificare il null
+		// verificare il null.
 		return null;
 	}
 
