@@ -9,8 +9,8 @@
 					class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="${pageContext.request.contextPath}/">MEMORY
-				GAME</a>
+			<a class="navbar-brand" class="active"
+				href="${pageContext.request.contextPath}/">MEMORY GAME</a>
 		</div>
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse"
@@ -18,29 +18,35 @@
 			<ul class="nav navbar-nav">
 				<li class="active"><a
 					href="${pageContext.request.contextPath}/">Home</a></li>
-				<c:if test="${username != null}">
+				<%-- 		<c:if test="${username != null}">
 					<li><a href="${pageContext.request.contextPath}/matchHistory">Match
 							history</a></li>
-				</c:if>
+				</c:if> --%>
 				<li class="dropdown"><a href="#" class="dropdown-toggle"
 					data-toggle="dropdown">More<span class="caret"></span></a>
 					<ul class="dropdown-menu" role="menu">
-						<li><a href="${pageContext.request.contextPath}//joinLobby">Join
-								a lobby</a></li>
-						<li><a href="#">Create a lobby</a></li>
-						<li><a href="#">Something else here</a></li>
-						<li class="divider"></li>
-						<li><a href="#">Match history</a></li>
-						<li class="divider"></li>
+						<c:if test="${user.username != null}">
+							<li><a href="${pageContext.request.contextPath}/createLobby">Create
+									a lobby</a></li>
+							<li><a href="${pageContext.request.contextPath}/joinListLobby">List
+									lobbies</a></li>
+							<li class="divider"></li>
+							<li><a
+								href="${pageContext.request.contextPath}/matchHistory">Match
+									history</a></li>
+							<li class="divider"></li>
+						</c:if>
 						<li><a href="${pageContext.request.contextPath}/rules">Rules</a></li>
 					</ul></li>
 			</ul>
-			<form class="navbar-form navbar-left" role="search">
-				<div class="form-group">
-					<input type="text" class="form-control" placeholder="Search">
-				</div>
-				<button type="submit" class="btn btn-default">Submit</button>
-			</form>
+			<c:if test="${user != null}">
+				<form class="navbar-form navbar-left" role="search">
+					<div class="form-group">
+						<input type="text" class="form-control" placeholder="Search">
+					</div>
+					<button type="submit" class="btn btn-default">Submit</button>
+				</form>
+			</c:if>
 			<%-- <c:if test="${username == null}">
 		<a href="${pageContext.request.contextPath}/login">Login</a>
 	</c:if>
@@ -48,7 +54,7 @@
 Hello ${username} | <a
 			href="${pageContext.request.contextPath}/logout">Logout</a>
 	</c:if> --%>
-			<c:if test="${username == null}">
+			<c:if test="${user == null}">
 				<%-- <a href="${pageContext.request.contextPath}/login">Login</a> --%>
 				<ul class="nav navbar-nav navbar-right">
 					<li><p class="navbar-text">Already have an account?</p></li>
@@ -151,10 +157,10 @@ Hello ${username} | <a
 						</ul></li>
 				</ul>
 			</c:if>
-			<c:if test="${username != null}">
+			<c:if test="${user != null}">
 				<ul class="nav navbar-nav navbar-right">
 					<li><p class="navbar-text">
-							<font color="white">Welcome ${username}</font>
+							<font color="white">Welcome ${user.username}</font>
 						</p></li>
 					<li><a href="${pageContext.request.contextPath}/logout">Logout</a></li>
 				</ul>

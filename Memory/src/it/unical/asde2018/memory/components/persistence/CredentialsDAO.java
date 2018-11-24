@@ -48,4 +48,15 @@ public class CredentialsDAO {
 		return result;
 	}
 
+	public boolean yetAnUser(String username) {
+		Session session = sessionFactory.openSession();
+
+		Query<Credentials> query = session.createQuery("from Credentials as c where c.username=:u", Credentials.class)
+				.setParameter("u", username);
+
+		boolean result = query.uniqueResult() != null;
+
+		return result;
+	}
+
 }

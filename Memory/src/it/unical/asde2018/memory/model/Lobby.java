@@ -6,54 +6,77 @@ import java.util.List;
 public class Lobby {
 
 	private String name;
-	private List<User> players;
+	private List<Player> players;
+	private Player creator;
+	private int maxNumPlayer;
+	private Game game;
 
-	public Lobby(String name, User user) {
+	public Lobby(String name, Player creator, int maxNumPlayer) {
 		super();
-		this.setName(name);
+		this.name = name;
+		this.maxNumPlayer = maxNumPlayer;
 		players = new ArrayList<>();
-		players.add(user);
+		this.creator = creator;
+		players.add(creator);
+	}
+
+	public void createGameLobby(String name) {
+		game = new Game(name);
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
+//	public void setName(String name) {
+//		this.name = name;
+//	}
 
 	public boolean full() {
-		if (players.size() >= 2)
+		if (players.size() >= maxNumPlayer)
 			return true;
 		return false;
 	}
 
-	public List<User> getPlayers() {
+	public List<Player> getPlayers() {
 		return players;
 	}
 
-	public void setPlayers(List<User> players) {
-		this.players = players;
-	}
+//	public void setPlayers(List<Player> players) {
+//		this.players = players;
+//	}
 
-	public int getLobbySize() {
+	public int getNumberOfPlayers() {
 		return players.size();
 	}
 
-	public void joinLobby(User user) {
-		// controllo che nn ci sonoi già e nn sono il creatore forse
-		players.add(user);
+	public void joinLobby(Player player) {
+//		if (!user.isCreator()) {
+		this.players.add(player);
+//		}
 	}
 
-	public void leaveLobby(User user) {
-		// controllo che nn ci sonoi già
-		players.remove(user);
+	public void leaveLobbyPlayer(Player player) {
+		players.remove(player);
 
 	}
 
-	public boolean creatorLobby(User user) {
-		return user.isCreator();
+//	public boolean creatorLobby(Credentials user) {
+//		System.out.println(user + " " + user.getUsername() + " " + user.isCreator());
+//		return user.isCreator();
+//	}
+
+//	public boolean alreadyInLobby(Credentials user) {
+//		for (Credentials inserted : players) {
+//			if (inserted.equals(user)) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+
+	public Player getCreator() {
+		return creator;
 	}
 
 }

@@ -1,209 +1,205 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Lobby</title>
+<title>Insert title here</title>
 <jsp:include page="../resources/header.jsp" />
 <link
 	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
 	rel="stylesheet">
-
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/resources/lobby.css"
 	type="text/css">
+
+
 </head>
-
 <body>
-	<jsp:include page="navbar.jsp" />
-	<div class="page-title">
-		<h1>LOBBIES</h1>
-	</div>
-
-	<%-- <c:if test="${not empty errorLobby}">
-		<div class="alert alert-danger alert-dismissible" role="alert">
-			<button type="button" class="close" data-dismiss="alert"
-				aria-label="Close">
-				<span aria-hidden="true">&times;</span>
-			</button>
-			<strong>${errorLobby}</strong>
-		</div>
-	</c:if> --%>
-
-	<!-- <div class="login-container">
-		<h1>Create new Lobby</h1>
-		<form method="POST" action="createLobby">
-			<table>
-				<tr>
-					<td>Name</td>
-					<td><input name="name" /></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td><input type="submit" value="Create" /></td>
-				</tr>
-			</table>
-		</form>
-	</div> -->
-
-
-	<br>
-
-
-	<div class="container" style="background-color: lightgrey">
+	<div class="container bootstrap snippets">
 		<div class="row">
-			<div class="col-lg-12">
-				<div class="main-box clearfix">
-					<div class="table-responsive">
-						<table class="table user-list">
-							<thead>
-								<tr>
-									<th><span>User</span></th>
-									<th><span>Lobby</span></th>
-									<th class="text-center"><span>Status Lobby</span></th>
-
-									<th>&nbsp;</th>
-								</tr>
-							</thead>
-							<!-- Si vanno a prendere tutte le lobby -->
-							<c:forEach items="${lobbies}" var="lobby">
-								<tbody>
-									<tr>
-										<td><img
-											src="https://bootdey.com/img/Content/avatar/avatar1.png"
-											alt=""> <!-- Si vanno a prendere tutti i giocatori di quella lobby  -->
-
-											<c:forEach items="${lobby.players}" var="player">
-											
-				 ${player.username}
-				</c:forEach> <br> <span class="user-subhead">Admin</span> <br> <span>Guest: ${userGuest}</span></td>
-										<%-- <td>${player.}</td> --%>
-										<td>${lobby.name}</td>
-										<c:choose>
-											<c:when test="${lobby.players.size() lt 2}">
-												<td class="text-center"><span
-													class="label label-success">Empty:
-														${lobby.players.size()}/2</span></td>
-											</c:when>
-											<c:otherwise>
-												<td class="text-center"><span
-													class="label label-danger">Full:
-														${lobby.players.size()}/2</span></td>
-											</c:otherwise>
-										</c:choose>
-
-										<!--Pulsante join lobby  -->
-										<td style="width: 20%;"><a
-											href="${pageContext.request.contextPath}/joinLobby?lobby=${lobby.name}"
-											class="table-link"> <span class="fa-stack"> <i
-													class="fa fa-square fa-stack-2x"></i> <i
-													class="fa fa-arrow-circle-up fa-stack-1x fa-inverse"></i>
+			<div class="col-md-12">
+				<!-- start:chat room -->
+				<div class="box">
+					<div class="chat-room">
+						<!-- start:aside kiri chat room -->
+						<aside class="kiri-side">
+							<div class="user-head">
+								<!-- 								<i class="fa fa-comments-o"></i>
+ -->
+								<h3>${lobby.getName()}</h3>
+							</div>
+							<ul class="chat-list">
+								<li class=""><a class="lobby" href="#lobby.html">
+										<h4>
+											<i class="fa fa-list"></i> Lobby
+										</h4>
+								</a></li>
+								<c:if
+									test="${lobby.players.size() gt 1 and lobby.creator eq user}">
+									<a href="${pageContext.request.contextPath}/startGame"
+										class="table-link success">
+										<button style="font-size: 10px">
+											Start Game<span class="fa-stack"> <i
+												class="fa fa-square fa-stack-2x" style="color: green"></i> <i
+												class="fa fa-gamepad fa-stack-1x fa-inverse"></i>
 											</span>
-										</a> <!--Pulsante leave lobby  --> <c:if
-												test="${lobby.players.size() gt 1}">
-												<a
-													href="${pageContext.request.contextPath}/leaveLobby?lobby=${lobby.name}"
-													class="table-link"> <span class="fa-stack"> <i
-														class="fa fa-square fa-stack-2x"></i> <i
-														class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-												</span>
-												</a>
-											</c:if> <!-- Start game --> <c:if
-												test="${lobby.players.size() gt 1 and player.creator }">
-												<a href="${pageContext.request.contextPath}/startGame"
-													class="table-link danger"> <span class="fa-stack">
-														<i class="fa fa-square fa-stack-2x"></i> <i
-														class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
-												</span>
-												</a>
-											</c:if></td>
-									</tr>
-								</tbody>
-							</c:forEach>
-						</table>
+										</button>
+									</a>
+								</c:if>
+
+								<li><a
+									href="${pageContext.request.contextPath}/leaveLobby?lobby=${lobby.name}"
+									class="table-link danger"><button style="font-size: 10px">
+											Leave Lobby <span class="fa-stack"> <i
+												class="fa fa-square fa-stack-2x"></i> <i
+												class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+											</span>
+										</button> </a></li>
+
+								<!-- <li class="active"><a href="#chat_room.html"> <i
+										class="fa fa-rocket"></i> <span>Water Cooler</span> <i
+										class="fa fa-times pull-right"></i>
+								</a></li>
+								<li><a href="#chat_room.html"> <i class="fa fa-rocket"></i>
+										<span>Design Lounge</span> <i class="fa fa-times pull-right"></i>
+								</a></li>
+								<li><a href="#chat_room.html"> <i class="fa fa-rocket"></i>
+										<span>Development</span> <i class="fa fa-times pull-right"></i>
+								</a></li>
+							</ul>
+							<ul class="chat-list chat-user">
+								<li><a href="##"> <i class="fa fa-circle text-success"></i>
+										<span>Jonathan Smith</span> <i class="fa fa-times pull-right"></i>
+								</a></li>
+								<li><a href="##"> <i class="fa fa-circle text-success"></i>
+										<span>Jhon Doe</span> <i class="fa fa-times pull-right"></i>
+								</a></li>
+								<li><a href="##"> <i class="fa fa-circle text-muted"></i>
+										<span>Cendy Andrianto</span> <i class="fa fa-times pull-right"></i>
+								</a></li>
+								<li><a href="##"> <i class="fa fa-circle text-danger"></i>
+										<span>Anjelina Joe</span> <i class="fa fa-times pull-right"></i>
+								</a></li> -->
+							</ul>
+							<footer>
+								<a class="chat-avatar" href="#javascript:;"> <img alt=""
+									src="http://bootemplates.com/themes/kentut/assets/img/avatar/avatar-19.jpg">
+								</a>
+								<div class="user-status">
+									<i class="fa fa-circle text-success"></i> Available
+								</div>
+								<a class="chat-dropdown pull-right" href="#javascript:;"> <i
+									class="fa fa-chevron-down"></i>
+								</a>
+							</footer>
+						</aside>
+						<!-- end:aside kiri chat room -->
+
+						<!-- start:aside tengah chat room -->
+						<aside class="tengah-side">
+							<div class="chat-room-head">
+								<h3>Air Koler</h3>
+								<form action="#" class="pull-right position">
+									<input type="text" placeholder="Search"
+										class="form-control search-btn ">
+								</form>
+							</div>
+							<div class="group-rom">
+								<div class="first-part odd">Jonathan Smith</div>
+								<div class="second-part">Hello Cendy are you there?</div>
+								<div class="third-part">12:30</div>
+							</div>
+							<div class="group-rom">
+								<div class="first-part">Cendy Andrianto</div>
+								<div class="second-part">Yoman Smith. Please proceed</div>
+								<div class="third-part">12:31</div>
+							</div>
+							<div class="group-rom">
+								<div class="first-part odd">Jonathan Smith</div>
+								<div class="second-part">I want to share a file using
+									chatroom</div>
+								<div class="third-part">12:32</div>
+							</div>
+							<div class="group-rom">
+								<div class="first-part">Cendy Andrianto</div>
+								<div class="second-part">oh sure. please send</div>
+								<div class="third-part">12:32</div>
+							</div>
+							<div class="group-rom">
+								<div class="first-part odd">Jonathan Smith</div>
+								<div class="second-part">
+									<a href="##">search_scb_dialog.jpg</a> <span class="text-muted">46.8KB</span>
+									<p>
+										<img
+											src="http://bootemplates.com/themes/kentut/assets/img/avatar/avatar-2.jpg"
+											alt="" class="img-responsive">
+									</p>
+								</div>
+								<div class="third-part">12:32</div>
+							</div>
+							<div class="group-rom">
+								<div class="first-part">Cendy Andrianto</div>
+								<div class="second-part">Fantastic job, love it :)</div>
+								<div class="third-part">12:32</div>
+							</div>
+							<div class="group-rom">
+								<div class="first-part odd">Jonathan Smith</div>
+								<div class="second-part">Thanks</div>
+								<div class="third-part">12:33</div>
+							</div>
+							<footer>
+								<div class="chat-txt">
+									<input type="text" class="form-control">
+								</div>
+								<div class="btn-group">
+									<button type="button" class="btn btn-white"
+										data-original-title="" title="">
+										<i class="fa fa-meh-o"></i>
+									</button>
+									<button type="button" class="btn btn-white"
+										data-original-title="" title="">
+										<i class=" fa fa-paperclip"></i>
+									</button>
+								</div>
+								<button class="btn btn-danger" data-original-title="" title="">Send</button>
+							</footer>
+						</aside>
+						<!-- end:aside tengah chat room -->
+
+						<!-- start:aside kanan chat room -->
+						<aside class="kanan-side">
+							<div class="user-head">
+								<a href="##" class="chat-tools btn-success"><i
+									class="fa fa-cog"></i> </a> <a href="##" class="chat-tools btn-key"><i
+									class="fa fa-key"></i> </a>
+							</div>
+							<div class="invite-row">
+								<h4 class="pull-left">People</h4>
+							</div>
+							<ul class="chat-available-user">
+								<c:forEach items="${lobby.getPlayers()}" var="player">
+									<li><a href="#chat-room.html"> <i
+											class="fa fa-circle text-success"></i> ${player.username}
+									</a></li>
+								</c:forEach>
+
+							</ul>
+							<footer>
+								<a href="##" class="guest-on"> <i class="fa fa-check"></i>
+									Guest Access On
+								</a>
+							</footer>
+						</aside>
+						<!-- end:aside kanan chat room -->
+
 					</div>
 				</div>
+				<!-- end:chat room -->
 			</div>
 		</div>
 	</div>
-
-	<%-- <div class="col-sm-4">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-4 col-sm-6">
-						<div class="pricingTable6 green">
-							<h3 class="title">${lobby.name}</h3>
-							<c:choose>
-								<c:when test="${lobby.size lt 2}">
-									<div class="price-value">
-										Players: ${lobby.size} <span class="month"></span>
-									</div>
-								</c:when>
-								<c:otherwise>
-									<div class="price-value-red">
-										Players: ${lobby.size} <span class="month"></span>
-									</div>
-								</c:otherwise>
-							</c:choose>
-							<ul class="pricing-content">
-							</ul>
-							<a
-								href="
-								${pageContext.request.contextPath}/joinLobby?lobby=${lobby.name
-								}
-								"
-								class="pricingTable-signup">Join Lobby</a>
-						</div>
-					</div>
-				</div>
-			</div>
-			<br>
-		</div>
- --%>
-
-
-
-	<%-- <div class="col-sm-4">
-
-			<div class="card-body">
-				<ul class="list-unstyled mb-5 position-relative">
-					<li>Players: ${lobby.size}</li>
-					<!-- Da chiedere -->
-					<li><a
-						href="${pageContext.request.contextPath}/joinLobby?lobby=${lobby.name}">Join
-							Lobby</a></li>
-				</ul>
-				<form class="form" role="form"
-					action="joinLobby?lobby=${lobby.name}">
-					<button type="submit" class="btn btn-default">Join Lobby</button>
-				</form>
-			</div>
-		</div> --%>
-
-
-
-	<!-- 	<div class="login-container">
-		<h1>Create new Lobby</h1>
-		<form method="POST" action="createLobby">
-			<table>
-				<tr>
-					<td>Name</td>
-					<td><input name="name" /></td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-				</tr>
-				<tr>
-					<td>&nbsp;</td>
-					<td><input type="submit" value="Create" /></td>
-				</tr>
-			</table>
-		</form>
-	</div> -->
 </body>
 </html>
