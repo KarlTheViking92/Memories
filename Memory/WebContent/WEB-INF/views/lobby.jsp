@@ -6,18 +6,11 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Lobby</title>
 <jsp:include page="../resources/header.jsp" />
-<link
-	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
-	rel="stylesheet">
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/lobby.css"
-	type="text/css">
-
-
 </head>
 <body>
+	<jsp:include page="navbar.jsp" />
 	<div class="container bootstrap snippets">
 		<div class="row">
 			<div class="col-md-12">
@@ -200,6 +193,10 @@
 				<!-- end:chat room -->
 			</div>
 		</div>
+		<a href="${pageContext.request.contextPath}/createGame">
+				<button class="btn btn-success">Start
+					Game</button>
+		</a>
 	</div>
 </body>
 </html>

@@ -124,10 +124,10 @@ public class HomeController {
 		return "listLobbies";
 	}
 
-	@RequestMapping({ "/startGame" })
+/*	@RequestMapping({ "/startGame" })
 	public String joinLobby(HttpServletRequest request, HttpSession session, Model model) {
 		return "game";
-	}
+	}*/
 
 	@RequestMapping("/rules")
 	public String rules(HttpSession session, Model model) {
