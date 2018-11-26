@@ -26,7 +26,7 @@ public class GameController {
 	public String createGame(HttpSession session, Model model, @RequestParam int difficulty, @RequestBody List<Player> players) {
 		System.out.println("CREATE GAME GAMECONTROLLER");
 		
-		//model.addAttribute("cards", gameService.getCards());
+		//model.addAttribute("cards", gameService.getCards());;
 		return "memory";
 	}
 	
