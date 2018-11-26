@@ -9,32 +9,14 @@ import it.unical.asde2018.memory.model.Player;
 
 public class GameManager {
 
-	public static enum Difficulty {
-		EASY(4), NORMAL(7), HARD(10);
-		private final int difficultyValue;
-
-		public int getDifficultyValue() {
-			return difficultyValue;
-		}
-
-		private Difficulty(int val) {
-			difficultyValue = val;
-		}
-	}
-
-	private List<Player> players;
+	
 
 	private MemoryLogic memory;
 	private List<MyImage> picked_card;
 	private int matrix_dimension;
 	private int win_count = 0;
 
-	public GameManager(List<Player> p, GameManager.Difficulty d) {
-		matrix_dimension = d.getDifficultyValue();
-		players = p;
-		picked_card = new ArrayList<>();
-		memory = new MemoryLogic(matrix_dimension);
-	}
+
 
 	public Integer[][] getMatrix() {
 		return memory.getMatrix();

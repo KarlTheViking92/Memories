@@ -174,9 +174,8 @@
 							</div>
 							<ul class="chat-available-user">
 								<c:forEach items="${lobby.getPlayers()}" var="player">
-									<li><a href="#chat-room.html"> <i
-											class="fa fa-circle text-success"></i> ${player.username}
-									</a></li>
+									<li><a href="#chat-room.html" class="player"> <i
+											class="fa fa-circle text-success"></i>${player.username}</a></li>
 								</c:forEach>
 
 							</ul>

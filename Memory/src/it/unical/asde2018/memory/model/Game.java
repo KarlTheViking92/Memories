@@ -13,6 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import it.unical.asde2018.memory.game.MemoryLogic;
 
 @Entity
 @Table(name = "Game")
@@ -20,7 +23,6 @@ public class Game {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	// @Column(name = "game_id")
 	private long id;
 
 	@ManyToMany(cascade = { CascadeType.ALL })
@@ -32,12 +34,45 @@ public class Game {
 	private int seconds;
 
 	@Column(nullable = false)
-	private String name;
-
-	@Column(nullable = false)
 	private String winner;
 
-	// private Player creator;
+	@Transient
+	private MemoryLogic memory;
+	@Transient
+	private List<MyImage> picked_card;
+
+	public static enum Difficulty {
+		EASY(4), NORMAL(7), HARD(10);
+		private final int difficultyValue;
+
+		public int getDifficultyValue() {
+			return difficultyValue;
+		}
+
+		private Difficulty(int val) {
+			difficultyValue = val;
+		}
+	}
+	@Transient
+	private int gameId;
+	@Transient
+	private int matrix_dimension;
+	@Transient
+	private int win_count = 0;
+
+	public Game(int gameId, List<Player> players, Difficulty d) {
+		this.setGameId(gameId);
+		this.players = players;
+		winner = "";
+		// forse da cacciare
+		matrix_dimension = d.difficultyValue;
+		memory = new MemoryLogic(matrix_dimension);
+		picked_card = new ArrayList<>();
+	}
+
+	public List<MyImage> getGameCards() {
+		return memory.getSelected();
+	}
 
 	public String getWinner() {
 		return winner;
@@ -45,25 +80,6 @@ public class Game {
 
 	public void setWinner(String winner) {
 		this.winner = winner;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Game() {
-		super();
-	}
-
-	public Game(String name) {
-		players = new ArrayList<Player>();
-		this.name = name;
-		winner = null;
-//		this.creator = creator;
 	}
 
 	public long getId() {
@@ -82,12 +98,37 @@ public class Game {
 		this.seconds = seconds;
 	}
 
-//	public Player getCreator() {
-//		return creator;
-//	}
-//
-//	public void setCreator(Player creator) {
-//		this.creator = creator;
-//	}
+	public String pick(int id, int count) {
+		List<MyImage> selected = memory.getSelected();
+		MyImage img = selected.get(count);
+		picked_card.add(img);
+
+		if (picked_card.size() == 2) {
+			System.out.println("confronto " + picked_card.get(0).getName());
+			System.out.println("con " + picked_card.get(1).getName());
+			System.out.println("bool " + picked_card.get(0).equals(picked_card.get(1)));
+
+			if (picked_card.get(0).equals(picked_card.get(1))) {
+				picked_card.clear();
+				win_count += 1;
+				if (win_count == matrix_dimension) {
+					return "win";
+				}
+				return "found-pair";
+			} else {
+				picked_card.clear();
+				return "wrong-pair";
+			}
+		} else
+			return "selected";
+	}
+
+	public int getGameId() {
+		return gameId;
+	}
+
+	public void setGameId(int gameId) {
+		this.gameId = gameId;
+	}
 
 }

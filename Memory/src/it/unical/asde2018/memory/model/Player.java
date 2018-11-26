@@ -14,7 +14,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Player")
 public class Player {
-
+	
+	//Aggiungere oggetto credentials qui.
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	// @Column(name = "player_id")

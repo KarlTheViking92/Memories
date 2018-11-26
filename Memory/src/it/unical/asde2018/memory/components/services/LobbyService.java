@@ -41,12 +41,6 @@ public class LobbyService {
 		return null;
 	}
 
-	public void createGame() {
-		for (Lobby lobby : lobbies) {
-			lobby.createGameLobby(lobby.getName());
-		}
-	}
-
 //	public void setLobbies(Set<Lobby> lobbies) {
 //		this.lobbies = lobbies;
 //	}
