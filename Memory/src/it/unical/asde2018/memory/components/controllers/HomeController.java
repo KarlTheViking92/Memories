@@ -110,7 +110,7 @@ public class HomeController {
 	public String leaveLobby(HttpServletRequest request, HttpSession session, Model model,
 			@RequestParam(value = "lobby", defaultValue = "") String name) {
 		Player player = (Player) session.getAttribute("user");
-		lobbyService.leaveLobby(name, player);
+		lobbyService.leaveLobby(name, player);;
 		model.addAttribute("lobbies", lobbyService.getLobbies());
 //		if(player.equals(lobbyService.getLobby(name).getCreator())){
 //			
