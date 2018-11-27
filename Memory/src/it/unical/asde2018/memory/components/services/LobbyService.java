@@ -1,9 +1,8 @@
 package it.unical.asde2018.memory.components.services;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.PostConstruct;
 
@@ -15,20 +14,23 @@ import it.unical.asde2018.memory.model.User;
 @Service
 public class LobbyService {
 
-	public Set<Lobby> lobbies = new HashSet<>();
+	public List<Lobby> lobbies;
 
 	@PostConstruct
 	public void init() {
-		lobbies.add(new Lobby("Saturn", new User("alex", "123")));
-		lobbies.add(new Lobby("Venus", new User("ciccio", "ff")));
-		lobbies.add(new Lobby("Mars", new User("giggino", "M")));
+		lobbies = new CopyOnWriteArrayList<>();
+		Lobby saturn = new Lobby("Saturn", new User("a", "a", true));
+		saturn.joinLobby(new User("ciccio", "ff"));
+		lobbies.add(saturn);
+		// lobbies.add(new Lobby("Venus", new User("ciccio", "ff")));
+		// lobbies.add(new Lobby("Mars", new User("giggino", "M")));
 	}
 
-	public Set<Lobby> getLobbies() {
+	public List<Lobby> getLobbies() {
 		return lobbies;
 	}
 
-	public void setLobbies(Set<Lobby> lobbies) {
+	public void setLobbies(List<Lobby> lobbies) {
 		this.lobbies = lobbies;
 	}
 
@@ -44,6 +46,16 @@ public class LobbyService {
 				}
 			}
 		}
+	}
+
+	public String getLobbyName(String name) {
+		String n = "";
+		for (Lobby inserted : lobbies) {
+			if (inserted.getName().equals(name)) {
+				n = inserted.getName();
+			}
+		}
+		return n;
 	}
 
 	public boolean notFullLoby(String name) {
@@ -82,12 +94,10 @@ public class LobbyService {
 	public void leaveLobby(String name, User user) {
 		for (Lobby inserted : lobbies) {
 			if (inserted.getName().equals(name)) {
+				System.out.println("REMOVE" + name + user.getUsername());
 				inserted.leaveLobby(user);
 				if (inserted.creatorLobby(user))
 					removeLobby(name);
-//				if (inserted.getLobbySize() < 1) {
-//					removeLobby(name);
-//				}
 			}
 		}
 	}
@@ -95,6 +105,7 @@ public class LobbyService {
 	private void removeLobby(String name) {
 		for (Lobby inserted : lobbies) {
 			if (inserted.getName().equals(name)) {
+				System.out.println("Remove " + inserted.getName());
 				lobbies.remove(inserted);
 			}
 		}

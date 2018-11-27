@@ -35,6 +35,13 @@ public class User {
 		super();
 	}
 
+	public User(String username, String password, boolean creator) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.creator = creator;
+	}
+
 	public User(String username, String password) {
 		super();
 		this.username = username;
