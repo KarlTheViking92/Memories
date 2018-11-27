@@ -20,6 +20,7 @@ public class CredentialsDAO {
 	@PostConstruct
 	public void init() {
 		save(new Credentials("a", "a"));
+		save(new Credentials("s", "s"));
 	}
 
 	public void save(Credentials credentials) {

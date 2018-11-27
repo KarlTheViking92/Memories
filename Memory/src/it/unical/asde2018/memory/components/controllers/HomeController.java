@@ -66,64 +66,6 @@ public class HomeController {
 		return "createLobby";
 	}
 
-	@RequestMapping("/joinListLobby")
-	public String listLobbies(Model model, HttpSession session) {
-		model.addAttribute("lobbies", lobbyService.getLobbies());
-		return "listLobbies";
-	}
-
-	@RequestMapping("/createNewLobby")
-	public String createNewLobby(@RequestParam String name, HttpSession session, Model model) {
-		// YOU HAVE TO SET THAT USER IS THE CREATOR
-		Player player = (Player) session.getAttribute("user");
-
-//		player.setCreator(true);
-//		session.setAttribute("user", player);
-		lobbyService.createLobby(name, player, 2);
-		model.addAttribute("createdLobby", "Lobby " + name + " has been created by " + player.getUsername());
-		session.setAttribute("lobby", lobbyService.getLobby(name));
-		// model.addAttribute("lobbies", lobbyService.getLobbies()); //NO NEED ANYMORE
-		return "lobby";
-	}
-
-	@RequestMapping({ "/joinLobby" })
-	public String joinLobby(HttpServletRequest request, HttpSession session, Model model,
-			@RequestParam(value = "lobby", defaultValue = "") String name) {
-		if (lobbyService.notFullLoby(name)) {
-			Player player = (Player) session.getAttribute("user");
-			lobbyService.joinLobby(name, player);
-//			model.addAttribute("players", lobbyService.getPlayers(name));
-//			model.addAttribute("nameLobby", name);
-
-			session.setAttribute("lobby", lobbyService.getLobby(name));
-			System.out.println(lobbyService.getPlayers(name));
-			// session
-			return "lobby";
-		} else {
-			model.addAttribute("errorLobby", name + " is full");
-			model.addAttribute("lobbies", lobbyService.getLobbies());
-		}
-		return "lobby";
-	}
-
-	@RequestMapping({ "/leaveLobby" })
-	public String leaveLobby(HttpServletRequest request, HttpSession session, Model model,
-			@RequestParam(value = "lobby", defaultValue = "") String name) {
-		Player player = (Player) session.getAttribute("user");
-		lobbyService.leaveLobby(name, player);
-		model.addAttribute("lobbies", lobbyService.getLobbies());
-//		if(player.equals(lobbyService.getLobby(name).getCreator())){
-//			
-//		}
-		return "listLobbies";
-	}
-
-	@RequestMapping("/refreshLobby")
-	public String refreshLobby(HttpSession session, Model model) {
-		model.addAttribute("lobbies", lobbyService.getLobbies());
-		return "listLobbies";
-	}
-
 /*	@RequestMapping({ "/startGame" })
 	public String joinLobby(HttpServletRequest request, HttpSession session, Model model) {
 		return "game";

@@ -2,6 +2,7 @@ package it.unical.asde2018.memory.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -29,10 +30,12 @@ public class Game {
 	@JoinTable(name = "PLAYER_GAME", joinColumns = { @JoinColumn(name = "game_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "player_id") })
 	private List<Player> players;
-
+//	private Map<Player,Integer> players_map;
+	
 	@Column(nullable = false)
 	private int seconds;
-
+	
+//	Non serve
 	@Column(nullable = false)
 	private String winner;
 

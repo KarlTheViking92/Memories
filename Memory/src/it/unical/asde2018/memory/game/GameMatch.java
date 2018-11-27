@@ -3,20 +3,24 @@ package it.unical.asde2018.memory.game;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.unical.asde2018.memory.model.Game;
 import it.unical.asde2018.memory.model.MyImage;
 import it.unical.asde2018.memory.model.Player;
 
-public class GameManager {
+public class GameMatch {
 
-	
-
+	private Player player;
 	private MemoryLogic memory;
-	private List<MyImage> picked_card;
 	private int matrix_dimension;
+
+//	2 player
+	private List<MyImage> picked_card;
 	private int win_count = 0;
 
-
+	public GameMatch(MemoryLogic m, Player p) {
+		memory = m;
+		player = p;
+		picked_card = new ArrayList<>();
+	}
 
 	public Integer[][] getMatrix() {
 		return memory.getMatrix();
@@ -51,5 +55,9 @@ public class GameManager {
 			return "selected";
 
 //		return "";
+	}
+	
+	public Player getPlayer() {
+		return player;
 	}
 }

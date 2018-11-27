@@ -8,6 +8,46 @@
 <meta charset="ISO-8859-1">
 <title>Lobby</title>
 <jsp:include page="../resources/header.jsp" />
+<script type="text/javascript">
+	$(document).ready(function() {
+		$("#createGame").on("click", function() {
+			var lobby = $("#lobby-name").text();
+			var difficulty = $("#difficulty").val();
+			
+			$.ajax({
+				type : "POST",
+				url : "createGame",
+				data : {
+					"difficulty" : difficulty
+				},
+				success : function(response) {
+					console.log("response " + response);
+					window.location.href = "./"+response;
+				},
+				error : function(jqXHR, exception) {
+					console.log("ERRORE");
+					var msg = '';
+					if (jqXHR.status === 0) {
+						msg = 'Not connect.\n Verify Network.';
+					} else if (jqXHR.status == 404) {
+						msg = 'Requested page not found. [404]';
+					} else if (jqXHR.status == 500) {
+						msg = 'Internal Server Error [500].';
+					} else if (exception === 'parsererror') {
+						msg = 'Requested JSON parse failed.';
+					} else if (exception === 'timeout') {
+						msg = 'Time out error.';
+					} else if (exception === 'abort') {
+						msg = 'Ajax request aborted.';
+					} else {
+						msg = 'Uncaught Error.\n' + jqXHR.responseText;
+					}
+					console.log(msg);
+				}
+			});
+		});
+	});
+</script>
 </head>
 <body>
 	<jsp:include page="navbar.jsp" />
@@ -32,17 +72,22 @@
 								</a></li>
 								<c:if
 									test="${lobby.players.size() gt 1 and lobby.creator eq user}">
-									<a href="${pageContext.request.contextPath}/startGame"
-										class="table-link success">
-										<button style="font-size: 10px">
-											Start Game<span class="fa-stack"> <i
-												class="fa fa-square fa-stack-2x" style="color: green"></i> <i
-												class="fa fa-gamepad fa-stack-1x fa-inverse"></i>
-											</span>
-										</button>
-									</a>
-								</c:if>
 
+									<button id="createGame" style="font-size: 10px">
+										Start Game<span class="fa-stack"> <i
+											class="fa fa-square fa-stack-2x" style="color: green"></i> <i
+											class="fa fa-gamepad fa-stack-1x fa-inverse"></i>
+										</span>
+									</button>
+
+								</c:if>
+								<c:if test="${lobby.creator eq user}">
+									<li><select id="difficulty">
+											<option value="EASY">Easy</option>
+											<option value="NORMAL">Normal</option>
+											<option value="HARD">Hard</option>
+									</select></li>
+								</c:if>
 								<li><a
 									href="${pageContext.request.contextPath}/leaveLobby?lobby=${lobby.name}"
 									class="table-link danger"><button style="font-size: 10px">
@@ -192,10 +237,10 @@
 				<!-- end:chat room -->
 			</div>
 		</div>
-		<form action="createGame" method="POST">
-			Difficulty: <input type="text" name="difficulty">
-			<input type="submit" value="Submit">
-		</form>
+		<!-- <form action="createGame" method="POST">
+			Difficulty: <input type="text" name="difficulty"> <input
+				type="submit" value="Submit">
+		</form> -->
 		<%-- <a href="${pageContext.request.contextPath}/createGame">
 				<button class="btn btn-success">Start
 					Game</button>

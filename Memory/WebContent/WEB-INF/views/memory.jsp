@@ -74,6 +74,7 @@
 	<div class="wrap">
 		<div class="game">
 			<c:set var="count" value="0" scope="page" />
+			<% System.out.println( "counter = " + pageContext.getAttribute("cards") ); %>
 			<c:forEach items="${cards}" var="card">
 				<div class="card" data-id="${card.id}" data-counter="${count}">
 					<div class="inside">

@@ -48,4 +48,10 @@ public class Player {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		Player p = (Player) obj;
+		return this.username == p.getUsername() &&  this.getId() == p.getId();
+	}
 }
