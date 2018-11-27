@@ -21,8 +21,8 @@
 				type : "POST",
 				url : "pickCard",
 				data : {
-					"id" : $card.attr("data-id"),
-					"count" : $card.attr("data-counter")
+					"imageId" : $card.attr("data-id"),
+					"position" : $card.attr("data-counter")
 				},
 				success : function(data) {
 					console.log("data is " + data);
@@ -94,5 +94,6 @@
 		</div>
 	</div>
 	<!-- End Wrap -->
+	<h1>${gameId}</h1>
 </body>
 </html>

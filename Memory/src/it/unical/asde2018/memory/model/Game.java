@@ -54,14 +54,14 @@ public class Game {
 		}
 	}
 	@Transient
-	private int gameId;
+	private String gameId;
 	@Transient
 	private int matrix_dimension;
 	@Transient
 	private int win_count = 0;
 
-	public Game(int gameId, List<Player> players, Difficulty d) {
-		this.setGameId(gameId);
+	public Game(String gameId, List<Player> players, Difficulty d) {
+		this.gameId = gameId;
 		this.players = players;
 		winner = "";
 		// forse da cacciare
@@ -123,12 +123,9 @@ public class Game {
 			return "selected";
 	}
 
-	public int getGameId() {
+	public String getGameId() {
 		return gameId;
 	}
 
-	public void setGameId(int gameId) {
-		this.gameId = gameId;
-	}
 
 }

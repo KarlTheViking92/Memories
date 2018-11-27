@@ -3,6 +3,7 @@ package it.unical.asde2018.memory.components.services;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
@@ -15,7 +16,8 @@ import it.unical.asde2018.memory.model.Player;
 @Service
 public class GameService {
 
-	private Map<Integer, Game> games;
+	private Map<String, Game> games;
+	private String gameId;
 
 	@PostConstruct
 	public void init() {
@@ -23,16 +25,18 @@ public class GameService {
 		System.out.println("LOAD GAME SERVICE");
 	}
 
-	public void createGame(int id, List<Player> players, Difficulty d) {
-		games.put(id, new Game(id, players, d));
+	public String createGame(List<Player> players, Difficulty d) {
+		gameId=UUID.randomUUID().toString();
+		games.put(gameId, new Game(gameId, players, d));
+		return gameId;
 	}
 
-	public List<MyImage> getCards(int gameId) {
+	public List<MyImage> getCards(String gameId) {
 		System.out.println("GET CARDS");
 		return games.get(gameId).getGameCards();
 	}
 
-	public String pickCard(int gameId,int imageId, int position) {
+	public String pickCard(String gameId,int imageId, int position) {
 		return games.get(gameId).pick(imageId, position);
 	}
 

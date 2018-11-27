@@ -192,10 +192,14 @@
 				<!-- end:chat room -->
 			</div>
 		</div>
-		<a href="${pageContext.request.contextPath}/createGame">
+		<form action="createGame" method="POST">
+			Difficulty: <input type="text" name="difficulty">
+			<input type="submit" value="Submit">
+		</form>
+		<%-- <a href="${pageContext.request.contextPath}/createGame">
 				<button class="btn btn-success">Start
 					Game</button>
-		</a>
+		</a> --%>
 	</div>
 </body>
 </html>
