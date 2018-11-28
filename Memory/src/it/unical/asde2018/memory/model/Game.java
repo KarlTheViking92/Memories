@@ -1,14 +1,11 @@
 package it.unical.asde2018.memory.model;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -16,6 +13,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import it.unical.asde2018.memory.game.GameMatch;
 import it.unical.asde2018.memory.game.MemoryLogic;
 
 @Entity
@@ -23,26 +21,25 @@ import it.unical.asde2018.memory.game.MemoryLogic;
 public class Game {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	@Column(name = "game_id")
+	private String gameID;
 
-	@ManyToMany(cascade = { CascadeType.ALL })
-	@JoinTable(name = "PLAYER_GAME", joinColumns = { @JoinColumn(name = "game_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "player_id") })
+	@ManyToMany(cascade= {CascadeType.ALL})
+	@JoinTable(name = "PLAYER_GAME", joinColumns = {@JoinColumn(name = "game_id")}, inverseJoinColumns = {@JoinColumn(name = "player_id")} )
 	private List<Player> players;
-//	private Map<Player,Integer> players_map;
+	
+	@Transient
+	private List<GameMatch> gamelist;
 	
 	@Column(nullable = false)
-	private int seconds;
+	private long winner;
 	
-//	Non serve
-	@Column(nullable = false)
-	private String winner;
-
 	@Transient
-	private MemoryLogic memory;
+	private boolean finished = false;
+	
 	@Transient
-	private List<MyImage> picked_card;
+	private Date init_time;
+	
 
 	public static enum Difficulty {
 		EASY(4), NORMAL(7), HARD(10);
@@ -56,79 +53,75 @@ public class Game {
 			difficultyValue = val;
 		}
 	}
-	@Transient
-	private String gameId;
-	@Transient
-	private int matrix_dimension;
-	@Transient
-	private int win_count = 0;
-
-	public Game(String gameId, List<Player> players, Difficulty d) {
-		this.gameId = gameId;
+	
+	public Game(String gameID, List<Player> players, Difficulty d) {
+		this.gameID = gameID;
 		this.players = players;
-		winner = "";
-		// forse da cacciare
-		matrix_dimension = d.difficultyValue;
-		memory = new MemoryLogic(matrix_dimension);
-		picked_card = new ArrayList<>();
+		MemoryLogic logic = new MemoryLogic(d.getDifficultyValue());
+		for (Player p : players) {
+			gamelist.add(new GameMatch(logic, p));
+		}
+	}
+	
+	public String getGameID() {
+		return gameID;
 	}
 
-	public List<MyImage> getGameCards() {
-		return memory.getSelected();
+	public void setGameID(String gameID) {
+		this.gameID = gameID;
 	}
 
-	public String getWinner() {
+	public List<Player> getPlayers() {
+		return players;
+	}
+
+	public void setPlayers(List<Player> players) {
+		this.players = players;
+	}
+
+	public List<GameMatch> getGamelist() {
+		return gamelist;
+	}
+
+	public void setGamelist(List<GameMatch> gamelist) {
+		this.gamelist = gamelist;
+	}
+
+	public long getWinner() {
 		return winner;
 	}
 
-	public void setWinner(String winner) {
+	public void setWinner(long winner) {
 		this.winner = winner;
 	}
 
-	public long getId() {
-		return id;
+	public boolean isFinished() {
+		return finished;
 	}
 
-	public void addPlayer(Player player) {
-		this.players.add(player);
+	public void setFinished(boolean finished) {
+		this.finished = finished;
 	}
 
-	public int getSeconds() {
-		return seconds;
+	public Date getInit_time() {
+		return init_time;
 	}
 
-	public void setSeconds(int seconds) {
-		this.seconds = seconds;
+	public void setInit_time(Date init_time) {
+		this.init_time = init_time;
 	}
 
-	public String pick(int id, int count) {
-		List<MyImage> selected = memory.getSelected();
-		MyImage img = selected.get(count);
-		picked_card.add(img);
-
-		if (picked_card.size() == 2) {
-			System.out.println("confronto " + picked_card.get(0).getName());
-			System.out.println("con " + picked_card.get(1).getName());
-			System.out.println("bool " + picked_card.get(0).equals(picked_card.get(1)));
-
-			if (picked_card.get(0).equals(picked_card.get(1))) {
-				picked_card.clear();
-				win_count += 1;
-				if (win_count == matrix_dimension) {
-					return "win";
-				}
-				return "found-pair";
-			} else {
-				picked_card.clear();
-				return "wrong-pair";
+	public List<MyImage> getCards(){
+		return gamelist.get(0).getImages();
+	}
+	
+	public String pickCard(Player p, int imageId, int position) {
+		GameMatch match = null;
+		for (GameMatch gameMatch : gamelist) {
+			if(gameMatch.getPlayer().equals(p)) {
+				match = gameMatch;
 			}
-		} else
-			return "selected";
+		}
+		return match.pick(imageId, position);
 	}
-
-	public String getGameId() {
-		return gameId;
-	}
-
-
 }

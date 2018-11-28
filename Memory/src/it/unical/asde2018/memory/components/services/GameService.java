@@ -1,17 +1,11 @@
 package it.unical.asde2018.memory.components.services;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import javax.annotation.PostConstruct;
-
 import org.springframework.stereotype.Service;
-
-import it.unical.asde2018.memory.game.GameMatch;
-import it.unical.asde2018.memory.game.MemoryLogic;
 import it.unical.asde2018.memory.model.Game;
 import it.unical.asde2018.memory.model.Game.Difficulty;
 import it.unical.asde2018.memory.model.MyImage;
@@ -21,8 +15,9 @@ import it.unical.asde2018.memory.model.Player;
 public class GameService {
 
 //	private Map<Player, GameMatch> games;
-	private Map<String, List<GameMatch>> games;
-	private String gameId;
+//	private Map<String, List<GameMatch>> games;
+	private Map<String, Game> games;
+//	private String gameId;
 
 	@PostConstruct
 	public void init() {
@@ -33,38 +28,28 @@ public class GameService {
 	public String createGame(List<Player> players, Difficulty d) {
 		System.out.println("CREATING GAME DIFFICULTY " + d);
 		System.out.println("CREATING GAME DIFFICULTY TOS " + d.toString());
-		gameId = UUID.randomUUID().toString();
+		String gameID = UUID.randomUUID().toString();
 
-		MemoryLogic logic = new MemoryLogic(d.getDifficultyValue());
-		List<GameMatch> gamelist = new ArrayList<>();
+		/*
+		 * MemoryLogic logic = new MemoryLogic(d.getDifficultyValue()); List<GameMatch>
+		 * gamelist = new ArrayList<>();
+		 * 
+		 * for (Player p : players) { gamelist.add(new GameMatch(logic, p)); }
+		 */
 
-		for (Player p : players) {
-			gamelist.add(new GameMatch(logic, p));
-		}
-		games.put(gameId, gamelist);
+		Game game = new Game(gameID, players, d);
+		games.put(gameID, game);
 
-		return gameId;
+		return gameID;
 	}
 
-	public List<MyImage> getCards(String gameId) {
+	public List<MyImage> getCards(String gameID) {
 		System.out.println("GET CARDS");
-
-		GameMatch gameMatch = games.get(gameId).get(0);
-
-		return gameMatch.getImages();
+		return games.get(gameID).getCards();
 	}
 
-	public String pickCard(String gameId, Player p, int imageId, int position) {
-
-		List<GameMatch> list = games.get(gameId);
-		GameMatch match = null;
-		System.out.println("list " + list);
-		for (GameMatch gameMatch : list) {
-			if(gameMatch.getPlayer().equals(p)) {
-				match = gameMatch;
-			}
-		}
-		return match.pick(imageId, position);
+	public String pickCard(String gameID, Player p, int imageId, int position) {
+		return games.get(gameID).pickCard(p, imageId, position);
 	}
 
 }

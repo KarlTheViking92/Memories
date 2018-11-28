@@ -14,12 +14,12 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Player")
 public class Player {
-	
-	//Aggiungere oggetto credentials qui.
-	
+
+	// Aggiungere oggetto credentials qui.
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	// @Column(name = "player_id")
+	@Column(name = "player_id")
 	private long id;
 
 	@ManyToMany(mappedBy = "players")
@@ -48,10 +48,10 @@ public class Player {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		Player p = (Player) obj;
-		return this.username == p.getUsername() &&  this.getId() == p.getId();
+		return this.username == p.getUsername() && this.getId() == p.getId();
 	}
 }
