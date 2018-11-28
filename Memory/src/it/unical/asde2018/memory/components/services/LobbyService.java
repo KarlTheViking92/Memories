@@ -23,7 +23,10 @@ public class LobbyService {
 	@PostConstruct
 	public void init() {
 		lobbies = new CopyOnWriteArrayList<>();
-		lobbies.add(new Lobby("Saturn", new Player("alex"), 2 /* new Credentials("alex", "123",true) */));
+//		Lobby l = new Lobby("Saturn", new Player("alex"), 2);
+//		l.joinLobby(new Player("carlo"));
+//		lobbies.add(l);
+
 		lobbies.add(new Lobby("Venus", new Player("ciccione"), 2));
 		lobbies.add(new Lobby("Mars", new Player("giggiino"), 2));
 	}

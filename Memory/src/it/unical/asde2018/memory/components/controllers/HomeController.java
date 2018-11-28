@@ -5,15 +5,20 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import it.unical.asde2018.memory.components.services.LobbyService;
 import it.unical.asde2018.memory.components.services.LoginService;
+import it.unical.asde2018.memory.model.Lobby;
 import it.unical.asde2018.memory.model.Player;
 
 @Controller
@@ -86,7 +91,7 @@ public class HomeController {
 		return "lobby";
 	}
 
-	@RequestMapping({ "/joinLobby" })
+	@RequestMapping(value = { "/joinLobby" })
 	public String joinLobby(HttpServletRequest request, HttpSession session, Model model,
 			@RequestParam(value = "lobby", defaultValue = "") String name) {
 		if (lobbyService.notFullLoby(name)) {
@@ -105,12 +110,65 @@ public class HomeController {
 		}
 		return "lobby";
 	}
+	
+	
+	
+
+	@PostMapping("/lobbyList")
+	@ResponseBody
+	public String getLobbyList(HttpSession session, Model model) {
+		if (session.getAttribute("user") != null) {
+			System.out.println("get Lobby list");
+//			User user = (User) session.getAttribute("user");
+			JSONArray lob = createJsonLobby(session);
+			System.out.println(lob.toString());
+			return lob.toJSONString();
+		}
+		return null;
+	}
+
+	private JSONArray createJsonLobby(HttpSession session) {
+
+		JSONArray jsonArray = new JSONArray();
+//
+
+		Player cUser = (Player) session.getAttribute("user");
+		String currentUser = cUser.getUsername();
+		// System.out.println(currentUser);
+//		JSONObject jsonCurrentUser = new JSONObject();
+//		jsonCurrentUser.put("currentUser", currentUser);
+
+		List<Lobby> lobbies = lobbyService.getLobbies();
+
+		for (Lobby lobby : lobbies) {
+			JSONObject jsonLobby = new JSONObject();
+			jsonLobby.put("name", lobby.getName());
+			jsonLobby.put("playerSize", lobby.getNumberOfPlayers());
+			jsonLobby.put("currentUser", currentUser);
+//			System.out.println("Sono nel JSON " + lobby.getName() + " " + lobby.getLobbySize() + " " + currentUser);
+			JSONArray jsonPlayers = new JSONArray();
+			for (Player user : lobby.getPlayers()) {
+				JSONObject jsonPlayer = new JSONObject();
+				jsonPlayer.put("player", user.getUsername());
+				jsonPlayer.put("creator", lobby.getCreator().getUsername());
+				jsonPlayers.add(jsonPlayer);
+
+			}
+			jsonLobby.put("userList", jsonPlayers);
+
+			jsonArray.add(jsonLobby);
+			// jsonArray.add(jsonCurrentUser);
+
+		}
+
+		return jsonArray;
+	}
 
 	@RequestMapping({ "/leaveLobby" })
 	public String leaveLobby(HttpServletRequest request, HttpSession session, Model model,
 			@RequestParam(value = "lobby", defaultValue = "") String name) {
 		Player player = (Player) session.getAttribute("user");
-		lobbyService.leaveLobby(name, player);;
+		lobbyService.leaveLobby(name, player);
 		model.addAttribute("lobbies", lobbyService.getLobbies());
 //		if(player.equals(lobbyService.getLobby(name).getCreator())){
 //			
@@ -124,10 +182,10 @@ public class HomeController {
 		return "listLobbies";
 	}
 
-/*	@RequestMapping({ "/startGame" })
-	public String joinLobby(HttpServletRequest request, HttpSession session, Model model) {
-		return "game";
-	}*/
+	/*
+	 * @RequestMapping({ "/startGame" }) public String joinLobby(HttpServletRequest
+	 * request, HttpSession session, Model model) { return "game"; }
+	 */
 
 	@RequestMapping("/rules")
 	public String rules(HttpSession session, Model model) {
