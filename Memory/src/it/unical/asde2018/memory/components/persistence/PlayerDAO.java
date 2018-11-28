@@ -1,6 +1,5 @@
 package it.unical.asde2018.memory.components.persistence;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -19,6 +18,7 @@ public class PlayerDAO {
 	private SessionFactory sessionFactory;
 
 	public void savePlayer(Player player) {
+		System.out.println("Player DAO " + player);
 		Session session = sessionFactory.openSession();
 
 		Transaction transaction = null;

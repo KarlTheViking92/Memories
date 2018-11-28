@@ -1,5 +1,6 @@
 package it.unical.asde2018.memory.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class Game {
 	@Transient
 	private List<GameMatch> gamelist;
 	
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private long winner;
 	
 	@Transient
@@ -54,7 +55,12 @@ public class Game {
 		}
 	}
 	
+	public Game() {
+		super();
+	}
+	
 	public Game(String gameID, List<Player> players, Difficulty d) {
+		gamelist = new ArrayList<>();
 		this.gameID = gameID;
 		this.players = players;
 		MemoryLogic logic = new MemoryLogic(d.getDifficultyValue());
