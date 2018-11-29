@@ -22,7 +22,7 @@
 	 $("#" + id_div).load(location.href + " #" + id_div + ">*", "");
 	 });*/
 
-	function updateLobby() {
+	function updateLobbyList() {
 		$
 				.ajax({
 					type : "POST",
@@ -100,7 +100,7 @@
 			},
 			success : function(result) {
 				//console.log(result);
-				updateLobby();
+				updateLobbyList();
 				getEventsFromServer();
 			},
 			error : function() {
@@ -112,7 +112,7 @@
 		});
 	}
 	$(document).ready(function (){
-		updateLobby();
+		updateLobbyList();
 		getEventsFromServer();
 	});
 </script>

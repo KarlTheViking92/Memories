@@ -8,6 +8,8 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -65,6 +67,39 @@ public class GameController {
 		}
 //		model.addAttribute("lobbies", lobbyService.getLobbies()); //NO NEED ANYMORE
 		return "lobby";
+	}
+
+	@PostMapping("/getLobby")
+	@ResponseBody
+	public String getLobby(HttpSession session, Model model) {
+		if (session.getAttribute("user") != null) {
+			System.out.println("get Lobby list");
+//	      User user = (User) session.getAttribute("user");
+			JSONObject lob = createLobbyJSON(session);
+			return lob.toJSONString();
+		}
+		return null;
+	}
+
+	private JSONObject createLobbyJSON(HttpSession session) {
+
+		JSONObject obj = new JSONObject();
+		Lobby lobby = (Lobby) session.getAttribute("lobby");
+		Player cUser = (Player) session.getAttribute("user");
+		List<Player> players = lobbyService.getPlayers(lobby.getName());
+		obj.put("user", cUser.getUsername());
+		obj.put("creator", lobby.getCreator().getUsername());
+		obj.put("playerSize", lobby.getNumberOfPlayers());
+//		jsonArray.add(obj);
+		JSONArray jsonArray = new JSONArray();
+		System.out.println("lobby: " + lobby.getName());
+		for (Player player : players) {
+			JSONObject jsonPlayer = new JSONObject();
+			jsonPlayer.put("player", player.getUsername());
+			jsonArray.add(jsonPlayer);
+		}
+		obj.put("players", jsonArray);
+		return obj;
 	}
 
 	@RequestMapping({ "/joinLobby" })

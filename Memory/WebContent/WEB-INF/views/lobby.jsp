@@ -8,15 +8,71 @@
 <meta charset="ISO-8859-1">
 <title>Lobby</title>
 <jsp:include page="../resources/header.jsp" />
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/checkbox.css"
+	type="text/css">
 <script type="text/javascript">
+	function updateLobby() {
+		$
+				.ajax({
+					type : "POST",
+					url : "getLobby",
+					contentType : 'application/json; charset=utf-8',
+					dataType : 'json',
+					success : function(data) {
+						console.log("SUCCESSO NELLA LOBBY");
+						console.log(data);
+						var str = "";
+						var lobbySize = data.playerSize;
+						var game_button = $("#g_button");
+						if (data.creator == data.user) {
+
+						}
+						if (lobbySize == 2 && data.creator == data.user) {
+							game_button.css("display", "");
+						}
+						console.log(data.players);
+						for (var i = 0; i < data.players.length; i++) {
+							var p = data.players[i].player;
+							console.log(p);
+							str += "<a href=\"#chat-room.html\"><i class=\"fa fa-circle text-success\"></i>"
+									+ p + "</a>";
+						}
+						//$(".chat-list").append(game_button);
+						$("#lobby-container").html(str);
+					},
+					error : function(jqXHR, exception) {
+						console.log("ERRORE");
+						var msg = '';
+						if (jqXHR.status === 0) {
+							msg = 'Not connect.\n Verify Network.';
+						} else if (jqXHR.status == 404) {
+							msg = 'Requested page not found. [404]';
+						} else if (jqXHR.status == 500) {
+							msg = 'Internal Server Error [500].';
+						} else if (exception === 'parsererror') {
+							msg = 'Requested JSON parse failed.';
+						} else if (exception === 'timeout') {
+							msg = 'Time out error.';
+						} else if (exception === 'abort') {
+							msg = 'Ajax request aborted.';
+						} else {
+							msg = 'Uncaught Error.\n' + jqXHR.responseText;
+						}
+						console.log(msg);
+					}
+				});
+	}
 	function getEventsFromServer() {
 		console.log("lobby get events");
 		$.ajax({
 			url : "getEvents",
-			data :{ eventSource : "lobby" },
+			data : {
+				eventSource : "lobby"
+			},
 			success : function(result) {
-				console.log(result);
-				window.location.reload();
+				//console.log(result);
+				updateLobby();
 				getEventsFromServer();
 			},
 			error : function() {
@@ -27,12 +83,11 @@
 			}
 		});
 	}
-
 	$(document).ready(function() {
 		$("#createGame").on("click", function() {
+			console.log("call CREATE GAME");
 			var lobby = $("#lobby-name").text();
-			var difficulty = $("#difficulty").val();
-
+			var difficulty = $('#difficulty input:radio:checked').val();
 			$.ajax({
 				type : "POST",
 				url : "createGame",
@@ -65,10 +120,11 @@
 				}
 			});
 		});
-		
+		updateLobby();
 		getEventsFromServer();
 	});
 </script>
+
 </head>
 <body>
 	<jsp:include page="navbar.jsp" />
@@ -83,32 +139,20 @@
 							<div class="user-head">
 								<!-- 								<i class="fa fa-comments-o"></i>
  -->
-								<h3>${lobby.getName()}</h3>
+
 							</div>
 							<ul class="chat-list">
-								<li class=""><a class="lobby" href="#lobby.html">
-										<h4>
-											<i class="fa fa-list"></i> Lobby
-										</h4>
-								</a></li>
-								<c:if
-									test="${lobby.players.size() gt 1 and lobby.creator eq user}">
-
-									<button id="createGame" style="font-size: 10px">
-										Start Game<span class="fa-stack"> <i
-											class="fa fa-square fa-stack-2x" style="color: green"></i> <i
-											class="fa fa-gamepad fa-stack-1x fa-inverse"></i>
-										</span>
-									</button>
-
-								</c:if>
-								<c:if test="${lobby.creator eq user}">
-									<li><select id="difficulty">
-											<option value="EASY">Easy</option>
-											<option value="NORMAL">Normal</option>
-											<option value="HARD">Hard</option>
-									</select></li>
-								</c:if>
+								<li style="text-align: center"><h3>Utenti nalla Lobby</h3></li>
+								<li>
+									<div id="lobby-container"></div>
+								</li>
+								<li><a id="g_button" style="display: none"><button
+											id="createGame" style="font-size: 10px">
+											Start Game<span class="fa-stack"> <i
+												class="fa fa-square fa-stack-2x" style="color: green"></i> <i
+												class="fa fa-gamepad fa-stack-1x fa-inverse"></i>
+											</span>
+										</button> </a></li>
 								<li><a
 									href="${pageContext.request.contextPath}/leaveLobby?lobby=${lobby.name}"
 									class="table-link danger"><button style="font-size: 10px">
@@ -117,130 +161,57 @@
 												class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
 											</span>
 										</button> </a></li>
+								<li><div class="col-sm-12">
+										<h5>Select Game Difficult</h5>
+										<div class="col-sm-12" id="difficulty">
+											<div class="radio">
+												<label> <input type="radio" name="o3" value="EASY">
+													<span class="cr"><i class="cr-icon fa fa-circle"></i></span>Easy</label>
+											</div>
+											<div class="radio">
+												<label> <input type="radio" name="o3" value="NORMAL"
+													checked> <span class="cr"><i
+														class="cr-icon fa fa-circle"></i></span>Normal</label>
+											</div>
+											<div class="radio">
+												<label> <input type="radio" name="o3" value="HARD"
+													> <span class="cr"><i
+														class="cr-icon fa fa-circle"></i></span>Hard</label>
+											</div>
+										</div></li>
+
 							</ul>
-							<footer>
-								<a class="chat-avatar" href="#javascript:;"> <img alt=""
-									src="http://bootemplates.com/themes/kentut/assets/img/avatar/avatar-19.jpg">
-								</a>
-								<div class="user-status">
-									<i class="fa fa-circle text-success"></i> Available
-								</div>
-								<a class="chat-dropdown pull-right" href="#javascript:;"> <i
-									class="fa fa-chevron-down"></i>
-								</a>
-							</footer>
 						</aside>
 						<!-- end:aside kiri chat room -->
 
 						<!-- start:aside tengah chat room -->
 						<aside class="tengah-side">
-							<div class="chat-room-head">
-								<h3>Air Koler</h3>
-								<form action="#" class="pull-right position">
-									<input type="text" placeholder="Search"
-										class="form-control search-btn ">
-								</form>
+							<div class="chat-room-head" align="center">
+
+								<h3 style="text-align: center">${lobby.getName()}</h3>
 							</div>
 							<div class="group-rom">
 								<div class="first-part odd">Jonathan Smith</div>
 								<div class="second-part">Hello Cendy are you there?</div>
 								<div class="third-part">12:30</div>
 							</div>
-							<div class="group-rom">
-								<div class="first-part">Cendy Andrianto</div>
-								<div class="second-part">Yoman Smith. Please proceed</div>
-								<div class="third-part">12:31</div>
-							</div>
-							<div class="group-rom">
-								<div class="first-part odd">Jonathan Smith</div>
-								<div class="second-part">I want to share a file using
-									chatroom</div>
-								<div class="third-part">12:32</div>
-							</div>
-							<div class="group-rom">
-								<div class="first-part">Cendy Andrianto</div>
-								<div class="second-part">oh sure. please send</div>
-								<div class="third-part">12:32</div>
-							</div>
-							<div class="group-rom">
-								<div class="first-part odd">Jonathan Smith</div>
-								<div class="second-part">
-									<a href="##">search_scb_dialog.jpg</a> <span class="text-muted">46.8KB</span>
-									<p>
-										<img
-											src="http://bootemplates.com/themes/kentut/assets/img/avatar/avatar-2.jpg"
-											alt="" class="img-responsive">
-									</p>
-								</div>
-								<div class="third-part">12:32</div>
-							</div>
-							<div class="group-rom">
-								<div class="first-part">Cendy Andrianto</div>
-								<div class="second-part">Fantastic job, love it :)</div>
-								<div class="third-part">12:32</div>
-							</div>
-							<div class="group-rom">
-								<div class="first-part odd">Jonathan Smith</div>
-								<div class="second-part">Thanks</div>
-								<div class="third-part">12:33</div>
-							</div>
+
 							<footer>
 								<div class="chat-txt">
 									<input type="text" class="form-control">
-								</div>
-								<div class="btn-group">
-									<button type="button" class="btn btn-white"
-										data-original-title="" title="">
-										<i class="fa fa-meh-o"></i>
-									</button>
-									<button type="button" class="btn btn-white"
-										data-original-title="" title="">
-										<i class=" fa fa-paperclip"></i>
-									</button>
 								</div>
 								<button class="btn btn-danger" data-original-title="" title="">Send</button>
 							</footer>
 						</aside>
 						<!-- end:aside tengah chat room -->
 
-						<!-- start:aside kanan chat room -->
-						<aside class="kanan-side">
-							<div class="user-head">
-								<a href="##" class="chat-tools btn-success"><i
-									class="fa fa-cog"></i> </a> <a href="##" class="chat-tools btn-key"><i
-									class="fa fa-key"></i> </a>
-							</div>
-							<div class="invite-row">
-								<h4 class="pull-left">People</h4>
-							</div>
-							<ul class="chat-available-user">
-								<c:forEach items="${lobby.getPlayers()}" var="player">
-									<li><a href="#chat-room.html" class="player"> <i
-											class="fa fa-circle text-success"></i>${player.username}</a></li>
-								</c:forEach>
 
-							</ul>
-							<footer>
-								<a href="##" class="guest-on"> <i class="fa fa-check"></i>
-									Guest Access On
-								</a>
-							</footer>
-						</aside>
-						<!-- end:aside kanan chat room -->
 
 					</div>
 				</div>
 				<!-- end:chat room -->
 			</div>
 		</div>
-		<!-- <form action="createGame" method="POST">
-			Difficulty: <input type="text" name="difficulty"> <input
-				type="submit" value="Submit">
-		</form> -->
-		<%-- <a href="${pageContext.request.contextPath}/createGame">
-				<button class="btn btn-success">Start
-					Game</button>
-		</a> --%>
 	</div>
 </body>
 </html>
