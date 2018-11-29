@@ -110,21 +110,52 @@ public class HomeController {
 		}
 		return "lobby";
 	}
-	
-	
-	
 
 	@PostMapping("/lobbyList")
 	@ResponseBody
 	public String getLobbyList(HttpSession session, Model model) {
 		if (session.getAttribute("user") != null) {
-			System.out.println("get Lobby list");
 //			User user = (User) session.getAttribute("user");
 			JSONArray lob = createJsonLobby(session);
-			System.out.println(lob.toString());
 			return lob.toJSONString();
 		}
 		return null;
+	}
+
+	@PostMapping("/getLobby")
+	@ResponseBody
+	public String getLobby(HttpSession session, Model model) {
+		if (session.getAttribute("user") != null) {
+			System.out.println("get Lobby list");
+//			User user = (User) session.getAttribute("user");
+			JSONArray lob = createJson(session);
+			return lob.toJSONString();
+		}
+		return null;
+	}
+
+	private JSONArray createJson(HttpSession session) {
+
+		JSONArray jsonArray = new JSONArray();
+		//
+
+		Lobby lobby = (Lobby) session.getAttribute("lobby");
+
+		Player cUser = (Player) session.getAttribute("user");
+		List<Player> players = lobbyService.getPlayers(lobby.getName());
+		System.out.println("lobby: " + lobby.getName());
+		JSONObject jsonCurrent = new JSONObject();
+		for (Player player : players) {
+			System.out.println("DIO PORCO DI MERDA " + lobby.getCreator().getUsername());
+			JSONObject jsonPlayer = new JSONObject();
+			jsonPlayer.put("playerSize", lobby.getNumberOfPlayers());
+			jsonPlayer.put("creator", lobby.getCreator().getUsername());
+
+			jsonPlayer.put("player", player.getUsername());
+			jsonArray.add(jsonPlayer);
+		}
+
+		return jsonArray;
 	}
 
 	private JSONArray createJsonLobby(HttpSession session) {
