@@ -3,6 +3,11 @@ package it.unical.asde2018.memory.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import it.unical.asde2018.memory.components.serializer.LobbySerializer;
+
+@JsonSerialize(using = LobbySerializer.class)
 public class Lobby {
 
 	private String name;

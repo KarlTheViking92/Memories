@@ -12,12 +12,12 @@ public class GameMatch {
 	private MemoryLogic memory;
 	private int matrix_dimension;
 
-//	2 player
 	private List<MyImage> picked_card;
 	private int win_count = 0;
 
 	public GameMatch(MemoryLogic m, Player p) {
 		memory = m;
+		matrix_dimension = m.getRows();
 		player = p;
 		picked_card = new ArrayList<>();
 	}
@@ -31,14 +31,20 @@ public class GameMatch {
 	}
 
 	public String pick(int id, int count) {
+		System.out.println("chiamo la funzione e ho " + (picked_card.size()+1));
 		List<MyImage> selected = memory.getSelected();
 		MyImage img = selected.get(count);
-		picked_card.add(img);
+		boolean test = false;
+		if (picked_card.size() < 2) {
+			System.out.println("inserisco la carta e ho " + (picked_card.size()+1));
+			picked_card.add(img);
+			test = true;
+		}
 
 		if (picked_card.size() == 2) {
-			System.out.println("confronto " + picked_card.get(0).getName());
-			System.out.println("con " + picked_card.get(1).getName());
-			System.out.println("bool " + picked_card.get(0).equals(picked_card.get(1)));
+//			System.out.println("confronto " + picked_card.get(0).getName());
+//			System.out.println("con " + picked_card.get(1).getName());
+//			System.out.println("bool " + picked_card.get(0).equals(picked_card.get(1)));
 
 			if (picked_card.get(0).equals(picked_card.get(1))) {
 				picked_card.clear();
@@ -51,12 +57,14 @@ public class GameMatch {
 				picked_card.clear();
 				return "wrong-pair";
 			}
-		} else
+		} else if(test)
 			return "selected";
+		else
+			return "not-permitted";
 
 //		return "";
 	}
-	
+
 	public Player getPlayer() {
 		return player;
 	}

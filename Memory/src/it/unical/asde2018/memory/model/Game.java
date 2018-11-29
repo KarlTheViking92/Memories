@@ -3,6 +3,7 @@ package it.unical.asde2018.memory.model;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -63,6 +64,8 @@ public class Game {
 		gamelist = new ArrayList<>();
 		this.gameID = gameID;
 		this.players = players;
+		init_time = new Date();
+		System.out.println(init_time);
 		MemoryLogic logic = new MemoryLogic(d.getDifficultyValue());
 		for (Player p : players) {
 			gamelist.add(new GameMatch(logic, p));
@@ -128,6 +131,14 @@ public class Game {
 				match = gameMatch;
 			}
 		}
-		return match.pick(imageId, position);
+		String pick = match.pick(imageId, position);
+		System.out.println("pick returns " + pick);
+		if(pick.equals("win")) {
+			winner = p.getId();
+			Date end_time = new Date();
+			System.out.println("l'utente " + winner + " ha concluso in " + TimeUnit.MILLISECONDS.toSeconds(( end_time.getTime() - init_time.getTime())) + " secondi");
+		}
+		
+		return pick;
 	}
 }

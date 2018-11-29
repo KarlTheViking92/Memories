@@ -14,7 +14,7 @@ import it.unical.asde2018.memory.model.Player;
 
 @Service
 public class LobbyService {
-
+	
 	private List<Lobby> lobbies;
 	private Map<String, Lobby> lobby_map;
 

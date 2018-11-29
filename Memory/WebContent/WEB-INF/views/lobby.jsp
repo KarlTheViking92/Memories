@@ -9,11 +9,30 @@
 <title>Lobby</title>
 <jsp:include page="../resources/header.jsp" />
 <script type="text/javascript">
+	function getEventsFromServer() {
+		console.log("lobby get events");
+		$.ajax({
+			url : "getEvents",
+			data :{ eventSource : "lobby" },
+			success : function(result) {
+				console.log(result);
+				window.location.reload();
+				getEventsFromServer();
+			},
+			error : function() {
+				//call events again after some time
+				setTimeout(function() {
+					getEventsFromServer();
+				}, 5000);
+			}
+		});
+	}
+
 	$(document).ready(function() {
 		$("#createGame").on("click", function() {
 			var lobby = $("#lobby-name").text();
 			var difficulty = $("#difficulty").val();
-			
+
 			$.ajax({
 				type : "POST",
 				url : "createGame",
@@ -22,7 +41,7 @@
 				},
 				success : function(response) {
 					console.log("response " + response);
-					window.location.href = "./"+response;
+					window.location.href = "./" + response;
 				},
 				error : function(jqXHR, exception) {
 					console.log("ERRORE");
@@ -46,6 +65,8 @@
 				}
 			});
 		});
+		
+		getEventsFromServer();
 	});
 </script>
 </head>
@@ -96,31 +117,6 @@
 												class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
 											</span>
 										</button> </a></li>
-
-								<!-- <li class="active"><a href="#chat_room.html"> <i
-										class="fa fa-rocket"></i> <span>Water Cooler</span> <i
-										class="fa fa-times pull-right"></i>
-								</a></li>
-								<li><a href="#chat_room.html"> <i class="fa fa-rocket"></i>
-										<span>Design Lounge</span> <i class="fa fa-times pull-right"></i>
-								</a></li>
-								<li><a href="#chat_room.html"> <i class="fa fa-rocket"></i>
-										<span>Development</span> <i class="fa fa-times pull-right"></i>
-								</a></li>
-							</ul>
-							<ul class="chat-list chat-user">
-								<li><a href="##"> <i class="fa fa-circle text-success"></i>
-										<span>Jonathan Smith</span> <i class="fa fa-times pull-right"></i>
-								</a></li>
-								<li><a href="##"> <i class="fa fa-circle text-success"></i>
-										<span>Jhon Doe</span> <i class="fa fa-times pull-right"></i>
-								</a></li>
-								<li><a href="##"> <i class="fa fa-circle text-muted"></i>
-										<span>Cendy Andrianto</span> <i class="fa fa-times pull-right"></i>
-								</a></li>
-								<li><a href="##"> <i class="fa fa-circle text-danger"></i>
-										<span>Anjelina Joe</span> <i class="fa fa-times pull-right"></i>
-								</a></li> -->
 							</ul>
 							<footer>
 								<a class="chat-avatar" href="#javascript:;"> <img alt=""
