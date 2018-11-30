@@ -83,7 +83,7 @@ public class GameController {
 	@RequestMapping({ "/joinLobby" })
 	public String joinLobby(HttpServletRequest request, HttpSession session, Model model,
 			@RequestParam(value = "lobby", defaultValue = "") String lobbyName) {
-		System.out.println("JOIN LOBBY FUNCT");
+		System.out.println("JOIN LOBBY FUNCT " + lobbyName);
 		if (!lobbyService.fullLobby(lobbyName)) {
 			Player player = (Player) session.getAttribute("user");
 			lobbyService.joinLobby(lobbyName, player);
@@ -173,9 +173,12 @@ public class GameController {
 //		System.out.println("pick card function");
 //		System.out.println("id : " + imageId);
 //		System.out.println("counter " + position);
-
-		return gameService.pickCard((String) session.getAttribute("game"), (Player) session.getAttribute("user"),
-				imageId, position);
+		String result = gameService.pickCard((String) session.getAttribute("game"),
+				(Player) session.getAttribute("user"), imageId, position);
+		if (result.equals("win")) {
+			System.out.println("Ha vinto " + ((Player) session.getAttribute("user")).getUsername());
+		}
+		return result;
 	}
 
 	@GetMapping("/checkGameStarted")

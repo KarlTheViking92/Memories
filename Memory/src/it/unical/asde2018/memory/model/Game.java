@@ -136,7 +136,7 @@ public class Game {
 		if(pick.equals("win")) {
 			winner = p.getId();
 			Date end_time = new Date();
-			System.out.println("l'utente " + winner + " ha concluso in " + TimeUnit.MILLISECONDS.toSeconds(( end_time.getTime() - init_time.getTime())) + " secondi");
+			System.out.println("l'utente " + p.getUsername() + " ha concluso in " + TimeUnit.MILLISECONDS.toSeconds(( end_time.getTime() - init_time.getTime())) + " secondi");
 		}
 		
 		return pick;
