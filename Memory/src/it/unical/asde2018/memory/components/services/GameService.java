@@ -23,7 +23,7 @@ public class GameService {
 
 	@Autowired
 	private GameDAO gameDAO;
-	
+
 	@PostConstruct
 	public void init() {
 		System.out.println("LOAD GAME SERVICE");
@@ -47,6 +47,29 @@ public class GameService {
 
 	public String pickCard(String gameID, Player p, int imageId, int position) {
 		return games.get(gameID).pickCard(p, imageId, position);
+	}
+	
+	public Game getMyGame(String user) {
+		for (String key : games.keySet()) {
+			Game game = games.get(key);
+			for (Player player : game.getPlayers()) {
+				if (user.equals(player.getUsername()))
+					return game;
+			}
+		}
+		return null;
+		
+	}
+
+	public String gameReady(String user) {
+		for (String key : games.keySet()) {
+			Game game = games.get(key);
+			for (Player player : game.getPlayers()) {
+				if (user.equals(player.getUsername()))
+					return "true";
+			}
+		}
+		return "false";
 	}
 
 }

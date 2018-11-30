@@ -25,11 +25,12 @@
 						var str = "";
 						var lobbySize = data.playerSize;
 						var game_button = $("#g_button");
+						var difficulty = $("#difficulty");
 						if (data.creator == data.user) {
-
-						}
-						if (lobbySize == 2 && data.creator == data.user) {
-							game_button.css("display", "");
+							difficulty.css("display", "");
+							if (lobbySize == 2) {
+								game_button.css("display", "");
+							}
 						}
 						console.log(data.players);
 						for (var i = 0; i < data.players.length; i++) {
@@ -42,7 +43,7 @@
 						$("#lobby-container").html(str);
 					},
 					error : function(jqXHR, exception) {
-						console.log("ERRORE");
+						console.log("ERRORE getLobby");
 						var msg = '';
 						if (jqXHR.status === 0) {
 							msg = 'Not connect.\n Verify Network.';
@@ -63,6 +64,43 @@
 					}
 				});
 	}
+	
+	function checkGameStarted(){
+		$.ajax({
+			type : "GET",
+			url : "checkGameStarted",
+			success : function(data) {
+				console.log("Return checkGameStarted");
+				console.log(data);
+				//var str = "";
+				if(data == "true"){
+					window.location.href = "./getGame";
+				}
+				
+			},
+			error : function(jqXHR, exception) {
+				console.log("ERRORE checkGameStarted");
+				var msg = '';
+				if (jqXHR.status === 0) {
+					msg = 'Not connect.\n Verify Network.';
+				} else if (jqXHR.status == 404) {
+					msg = 'Requested page not found. [404]';
+				} else if (jqXHR.status == 500) {
+					msg = 'Internal Server Error [500].';
+				} else if (exception === 'parsererror') {
+					msg = 'Requested JSON parse failed.';
+				} else if (exception === 'timeout') {
+					msg = 'Time out error.';
+				} else if (exception === 'abort') {
+					msg = 'Ajax request aborted.';
+				} else {
+					msg = 'Uncaught Error.\n' + jqXHR.responseText;
+				}
+				console.log(msg);
+			}
+		});
+	}
+	
 	function getEventsFromServer() {
 		console.log("lobby get events");
 		$.ajax({
@@ -71,8 +109,14 @@
 				eventSource : "lobby"
 			},
 			success : function(result) {
-				//console.log(result);
-				updateLobby();
+				console.log("result ajax update lobby");
+				console.log(result);
+				if (result == "joined") {
+					updateLobby();
+				}else if(result == "gameStarted"){
+					console.log("YEAH");
+					checkGameStarted();
+				}
 				getEventsFromServer();
 			},
 			error : function() {
@@ -161,24 +205,27 @@
 												class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
 											</span>
 										</button> </a></li>
-								<li><div class="col-sm-12">
+								<li><div class="col-sm-12" id="difficulty" style="display: none">
 										<h5>Select Game Difficult</h5>
-										<div class="col-sm-12" id="difficulty">
+										<div class="col-sm-12" >
 											<div class="radio">
 												<label> <input type="radio" name="o3" value="EASY">
-													<span class="cr"><i class="cr-icon fa fa-circle"></i></span>Easy</label>
+													<span class="cr"><i class="cr-icon fa fa-circle"></i></span>Easy
+												</label>
 											</div>
 											<div class="radio">
 												<label> <input type="radio" name="o3" value="NORMAL"
 													checked> <span class="cr"><i
-														class="cr-icon fa fa-circle"></i></span>Normal</label>
+														class="cr-icon fa fa-circle"></i></span>Normal
+												</label>
 											</div>
 											<div class="radio">
-												<label> <input type="radio" name="o3" value="HARD"
-													> <span class="cr"><i
-														class="cr-icon fa fa-circle"></i></span>Hard</label>
+												<label> <input type="radio" name="o3" value="HARD">
+													<span class="cr"><i class="cr-icon fa fa-circle"></i></span>Hard
+												</label>
 											</div>
-										</div></li>
+										</div>
+									</div></li>
 
 							</ul>
 						</aside>

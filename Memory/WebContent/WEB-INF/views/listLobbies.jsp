@@ -99,8 +99,11 @@
 				eventSource : "lobby"
 			},
 			success : function(result) {
-				//console.log(result);
-				updateLobbyList();
+				console.log("result ajax update lobby list");
+				console.log(result);
+				if (result == "newLobby" || result == "removedLobby") {
+					updateLobbyList();
+				}
 				getEventsFromServer();
 			},
 			error : function() {
@@ -111,7 +114,7 @@
 			}
 		});
 	}
-	$(document).ready(function (){
+	$(document).ready(function() {
 		updateLobbyList();
 		getEventsFromServer();
 	});

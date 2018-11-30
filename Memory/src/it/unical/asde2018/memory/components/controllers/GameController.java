@@ -1,6 +1,5 @@
 package it.unical.asde2018.memory.components.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 
@@ -23,9 +22,9 @@ import org.springframework.web.context.request.async.DeferredResult;
 import it.unical.asde2018.memory.components.services.EventService;
 import it.unical.asde2018.memory.components.services.GameService;
 import it.unical.asde2018.memory.components.services.LobbyService;
+import it.unical.asde2018.memory.model.Game;
 import it.unical.asde2018.memory.model.Game.Difficulty;
 import it.unical.asde2018.memory.model.Lobby;
-import it.unical.asde2018.memory.model.MyImage;
 import it.unical.asde2018.memory.model.Player;
 
 @Controller
@@ -40,8 +39,8 @@ public class GameController {
 	@Autowired
 	private EventService eventService;
 
-	private final String gameEvent = "game";
-	private final String lobbyEvent = "lobby";
+	private final static String gameEvent = "game";
+	private final static String lobbyEvent = "lobby";
 
 	@PostConstruct
 	private void init() {
@@ -60,7 +59,7 @@ public class GameController {
 		model.addAttribute("createdLobby", "Lobby " + name + " has been created by " + player.getUsername());
 		session.setAttribute("lobby", lobbyService.getLobby(name));
 		try {
-			eventService.addEvent(session.getId(), lobbyEvent, name);
+			eventService.addEvent(name, lobbyEvent, "newLobby");
 //			eventService.addEvent(id, eventSource, type);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -81,48 +80,28 @@ public class GameController {
 		return null;
 	}
 
-	private JSONObject createLobbyJSON(HttpSession session) {
-
-		JSONObject obj = new JSONObject();
-		Lobby lobby = (Lobby) session.getAttribute("lobby");
-		Player cUser = (Player) session.getAttribute("user");
-		List<Player> players = lobbyService.getPlayers(lobby.getName());
-		obj.put("user", cUser.getUsername());
-		obj.put("creator", lobby.getCreator().getUsername());
-		obj.put("playerSize", lobby.getNumberOfPlayers());
-//		jsonArray.add(obj);
-		JSONArray jsonArray = new JSONArray();
-		System.out.println("lobby: " + lobby.getName());
-		for (Player player : players) {
-			JSONObject jsonPlayer = new JSONObject();
-			jsonPlayer.put("player", player.getUsername());
-			jsonArray.add(jsonPlayer);
-		}
-		obj.put("players", jsonArray);
-		return obj;
-	}
-
 	@RequestMapping({ "/joinLobby" })
 	public String joinLobby(HttpServletRequest request, HttpSession session, Model model,
-			@RequestParam(value = "lobby", defaultValue = "") String name) {
+			@RequestParam(value = "lobby", defaultValue = "") String lobbyName) {
 		System.out.println("JOIN LOBBY FUNCT");
-		if (!lobbyService.fullLobby(name)) {
+		if (!lobbyService.fullLobby(lobbyName)) {
 			Player player = (Player) session.getAttribute("user");
-			lobbyService.joinLobby(name, player);
+			lobbyService.joinLobby(lobbyName, player);
+//			Lobby lobby = lobbyService.getLobby(lobbyName);
 			try {
-				eventService.addEvent(session.getId(), lobbyEvent, "joined");
+				eventService.addEvent(lobbyName, lobbyEvent, "joined");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 //			model.addAttribute("players", lobbyService.getPlayers(name));
 //			model.addAttribute("nameLobby", name);
 
-			session.setAttribute("lobby", lobbyService.getLobby(name));
-			System.out.println(lobbyService.getPlayers(name));
+			session.setAttribute("lobby", lobbyService.getLobby(lobbyName));
+			System.out.println(lobbyService.getPlayers(lobbyName));
 			// session
 			return "lobby";
 		} else {
-			model.addAttribute("errorLobby", name + " is full");
+			model.addAttribute("errorLobby", lobbyName + " is full");
 			model.addAttribute("lobbies", lobbyService.getLobbies());
 		}
 		return "lobby";
@@ -133,6 +112,12 @@ public class GameController {
 			@RequestParam(value = "lobby", defaultValue = "") String name) {
 		Player player = (Player) session.getAttribute("user");
 		lobbyService.leaveLobby(name, player);
+		try {
+			eventService.addEvent(session.getId(), lobbyEvent, "removedLobby");
+//			eventService.addEvent(id, eventSource, type);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		model.addAttribute("lobbies", lobbyService.getLobbies());
 		return "listLobbies";
 	}
@@ -159,6 +144,11 @@ public class GameController {
 				String gameID = gameService.createGame(lobbyPlayer.getPlayers(), Difficulty.valueOf(difficulty));
 //				model.addAttribute("game", gameID);
 				session.setAttribute("game", gameID);
+				try {
+					eventService.addEvent(gameID, lobbyEvent, "gameStarted");
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 //				model.addAttribute("cards", gameService.getCards(gameID));
 				return "getGame";
 			} else {
@@ -170,6 +160,9 @@ public class GameController {
 
 	@GetMapping("getGame")
 	public String getGame(HttpSession session, Model model) {
+		Player player = (Player) session.getAttribute("user");
+		Game myGame = gameService.getMyGame(player.getUsername());
+		session.setAttribute("game", myGame.getGameID());
 		model.addAttribute("cards", gameService.getCards((String) session.getAttribute("game")));
 		return "memory";
 	}
@@ -185,15 +178,36 @@ public class GameController {
 				imageId, position);
 	}
 
+	@GetMapping("/checkGameStarted")
+	@ResponseBody
+	public String checkGameStarted(HttpSession session, Model model) {
+		Player player = (Player) session.getAttribute("user");
+		return gameService.gameReady(player.getUsername());
+	}
+
 	@GetMapping("/getEvents")
 	@ResponseBody
 	public DeferredResult<String> getEvents(HttpSession session, @RequestParam String eventSource) {
 
 		System.out.println("CALL GET EVENTS Controller");
+		System.out.println("eventSource " + eventSource);
 		DeferredResult<String> output = new DeferredResult<>();
 		ForkJoinPool.commonPool().submit(() -> {
 			try {
-				System.out.println("session id " + session.getId());
+//				Player p = (Player) session.getAttribute("user");
+//				System.out.println("evento richiesto da " + p.getUsername());
+//				Lobby lobby = (Lobby) session.getAttribute("lobby");
+//				Game game = (Game) session.getAttribute("game");
+//				switch(eventSource) {
+//				case "game":
+//					break;
+//				case "lobby":
+//					System.out.println("get lobby event" + lobby.getName());
+//					output.setResult(eventService.nextEvent(lobby.getName(), eventSource));
+//					break;
+//				default:
+//					break;
+//				}
 				output.setResult(eventService.nextEvent(session.getId(), eventSource));
 			} catch (InterruptedException e) {
 				output.setResult("An error occurred during event retrieval");
@@ -203,4 +217,25 @@ public class GameController {
 		return output;
 	}
 
+	@SuppressWarnings("unchecked")
+	private JSONObject createLobbyJSON(HttpSession session) {
+
+		JSONObject obj = new JSONObject();
+		Lobby lobby = (Lobby) session.getAttribute("lobby");
+		Player cUser = (Player) session.getAttribute("user");
+		List<Player> players = lobbyService.getPlayers(lobby.getName());
+		obj.put("user", cUser.getUsername());
+		obj.put("creator", lobby.getCreator().getUsername());
+		obj.put("playerSize", lobby.getNumberOfPlayers());
+//		jsonArray.add(obj);
+		JSONArray jsonArray = new JSONArray();
+		System.out.println("lobby: " + lobby.getName());
+		for (Player player : players) {
+			JSONObject jsonPlayer = new JSONObject();
+			jsonPlayer.put("player", player.getUsername());
+			jsonArray.add(jsonPlayer);
+		}
+		obj.put("players", jsonArray);
+		return obj;
+	}
 }

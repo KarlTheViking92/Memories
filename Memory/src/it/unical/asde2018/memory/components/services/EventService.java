@@ -27,7 +27,7 @@ public class EventService {
 	public void addEvent(String id, String eventSource, String type) throws InterruptedException {
 //		System.out.println("ADD EVENT CALL id: " + id + " event : " + eventSource);
 		for (BlockingQueue<String> queue : event_map.get(eventSource).values()) {
-			queue.put(eventSource);
+			queue.put(type);
 		}
 	}
 
@@ -35,7 +35,7 @@ public class EventService {
 //		System.out.println("GET EVENT CALL event service");
 //		System.out.println("EVENT SOURCE " + eventSource);
 		if (!event_map.get(eventSource).containsKey(id)) {
-			System.out.println("create queue " + id);
+//			System.out.println("create queue " + id);
 			event_map.get(eventSource).put(id, new LinkedBlockingQueue<>());
 		}
 		return event_map.get(eventSource).get(id).take();

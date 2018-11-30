@@ -86,6 +86,7 @@ public class HomeController {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	private JSONArray lobbyList(HttpSession session) {
 
 		JSONArray jsonArray = new JSONArray();

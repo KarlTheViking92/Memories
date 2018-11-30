@@ -160,7 +160,6 @@ public class LobbyService {
 	public Lobby getLobbyPlayer(Player p) {
 		for (Lobby lobby : lobby_map.values()) {
 			if(lobby.getPlayers().contains(p)) {
-				System.out.println("ho trovato la lobby di dio");
 				return lobby;
 			}
 		}
