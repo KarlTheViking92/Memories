@@ -23,7 +23,7 @@ public class GameService {
 
 	@Autowired
 	private GameDAO gameDAO;
-
+	
 	@PostConstruct
 	public void init() {
 		System.out.println("LOAD GAME SERVICE");
@@ -31,8 +31,8 @@ public class GameService {
 	}
 
 	public String createGame(List<Player> players, Difficulty d) {
-		System.out.println("CREATING GAME DIFFICULTY " + d);
-		System.out.println("CREATING GAME DIFFICULTY TOS " + d.toString());
+//		System.out.println("CREATING GAME DIFFICULTY " + d);
+//		System.out.println("CREATING GAME DIFFICULTY TOS " + d.toString());
 		String gameID = UUID.randomUUID().toString();
 
 		Game game = new Game(gameID, players, d);
@@ -59,6 +59,10 @@ public class GameService {
 		}
 		return null;
 		
+	}
+	
+	public Game getGame(String gameID) {
+		return games.get(gameID);
 	}
 
 	public String gameReady(String user) {

@@ -127,7 +127,7 @@ public class LobbyService {
 		return lobby_map.get(name).getPlayers();
 	}
 
-	public void leaveLobby(String name, Player player) {
+	public boolean leaveLobby(String name, Player player) {
 /*		for (Lobby lobby : lobbies) {
 			if (lobby.getName().equals(name)) {
 				System.out.println("size lista prima dell'if " + lobby.getNumberOfPlayers());
@@ -143,9 +143,12 @@ public class LobbyService {
 		Lobby lobby = lobby_map.get(name);
 		if(lobby.getPlayers().contains(player)) {
 			lobby.getPlayers().remove(player);
-			if(lobby.getCreator().equals(player) || !lobby.full())
+			if(lobby.getCreator().equals(player)) {
 				removeLobby(name);
+				return true;
+			}
 		}
+		return false;
 	}
 
 	private void removeLobby(String name) {

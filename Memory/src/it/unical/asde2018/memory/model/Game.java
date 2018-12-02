@@ -26,22 +26,25 @@ public class Game {
 	@Column(name = "game_id")
 	private String gameID;
 
-	@ManyToMany(cascade= {CascadeType.ALL})
-	@JoinTable(name = "PLAYER_GAME", joinColumns = {@JoinColumn(name = "game_id")}, inverseJoinColumns = {@JoinColumn(name = "player_id")} )
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(name = "PLAYER_GAME", joinColumns = { @JoinColumn(name = "game_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "player_id") })
 	private List<Player> players;
-	
+
 	@Transient
 	private List<GameMatch> gamelist;
-	
+
 	@Column(nullable = true)
-	private long winner;
-	
+	private String winner;
+
 	@Transient
 	private boolean finished = false;
-	
+
 	@Transient
 	private Date init_time;
-	
+
+	@Transient
+	private Date end_time;
 
 	public static enum Difficulty {
 		EASY(4), NORMAL(7), HARD(10);
@@ -55,11 +58,11 @@ public class Game {
 			difficultyValue = val;
 		}
 	}
-	
+
 	public Game() {
 		super();
 	}
-	
+
 	public Game(String gameID, List<Player> players, Difficulty d) {
 		gamelist = new ArrayList<>();
 		this.gameID = gameID;
@@ -71,7 +74,7 @@ public class Game {
 			gamelist.add(new GameMatch(logic, p));
 		}
 	}
-	
+
 	public String getGameID() {
 		return gameID;
 	}
@@ -96,11 +99,11 @@ public class Game {
 		this.gamelist = gamelist;
 	}
 
-	public long getWinner() {
+	public String getWinner() {
 		return winner;
 	}
 
-	public void setWinner(long winner) {
+	public void setWinner(String winner) {
 		this.winner = winner;
 	}
 
@@ -120,25 +123,30 @@ public class Game {
 		this.init_time = init_time;
 	}
 
-	public List<MyImage> getCards(){
+	public List<MyImage> getCards() {
 		return gamelist.get(0).getImages();
 	}
-	
+
 	public String pickCard(Player p, int imageId, int position) {
 		GameMatch match = null;
 		for (GameMatch gameMatch : gamelist) {
-			if(gameMatch.getPlayer().equals(p)) {
+			if (gameMatch.getPlayer().equals(p)) {
 				match = gameMatch;
 			}
 		}
 		String pick = match.pick(imageId, position);
 		System.out.println("pick returns " + pick);
-		if(pick.equals("win")) {
-			winner = p.getId();
-			Date end_time = new Date();
-			System.out.println("l'utente " + p.getUsername() + " ha concluso in " + TimeUnit.MILLISECONDS.toSeconds(( end_time.getTime() - init_time.getTime())) + " secondi");
+		if (pick.equals("win")) {
+			winner = p.getUsername();
+			end_time = new Date();
+			System.out.println("l'utente " + p.getUsername() + " ha concluso in "
+					 + " secondi");
 		}
-		
+
 		return pick;
+	}
+
+	public long getResultTime() {
+		return TimeUnit.MILLISECONDS.toSeconds((end_time.getTime() - init_time.getTime()));
 	}
 }

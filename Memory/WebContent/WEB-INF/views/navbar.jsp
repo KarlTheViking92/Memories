@@ -22,7 +22,19 @@
 					<li><a href="${pageContext.request.contextPath}/matchHistory">Match
 							history</a></li>
 				</c:if> --%>
-				<li class="dropdown"><a href="#" class="dropdown-toggle"
+				<c:if test="${user.username != null and inGame !='true'}">
+					<li><a href="${pageContext.request.contextPath}/createLobby">Create
+							a lobby</a></li>
+					<li><a href="${pageContext.request.contextPath}/redirectList">List
+							lobbies</a></li>
+					<li class="divider"></li>
+					<li><a href="${pageContext.request.contextPath}/matchHistory">Match
+							history</a></li>
+					<li class="divider"></li>
+				</c:if>
+				
+
+				<%-- 			<li class="dropdown"><a href="#" class="dropdown-toggle"
 					data-toggle="dropdown">More<span class="caret"></span></a>
 					<ul class="dropdown-menu" role="menu">
 						<c:if test="${user.username != null}">
@@ -37,7 +49,7 @@
 							<li class="divider"></li>
 						</c:if>
 						<li><a href="${pageContext.request.contextPath}/rules">Rules</a></li>
-					</ul></li>
+					</ul></li> --%>
 			</ul>
 			<c:if test="${user != null}">
 				<form class="navbar-form navbar-left" role="search">

@@ -7,13 +7,37 @@
 <meta charset="ISO-8859-1">
 <title>Memory</title>
 <link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/memory.css"
+	href="${pageContext.request.contextPath}/resources/css/memory.css"
+	type="text/css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/css/timer.css"
 	type="text/css">
 <jsp:include page="../resources/header.jsp" />
 <script type="text/javascript" src="resources/js/memory.js"></script>
+<script type="text/javascript" src="resources/js/timer.js"></script>
 </head>
 <body>
 	<jsp:include page="navbar.jsp" />
+	<div class="container">
+		<section id="timer" >
+			<div id="timer-row" class="row" hidden="true">
+				<div
+					class="col-xs-12 col-sm-12 col-md-12 countdown-wrapper text-center mb20">
+					<div class="timer">
+						<div class="card-block">
+							<div id="countdown">
+							<!-- 	<span id="hour" class="timer bg-success"></span> 
+								<span id="min"
+									class="timer bg-info">
+								</span> --> <span id="sec"
+									class="timer bg-primary"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
 
 	<div class="wrap">
 		<div class="game">

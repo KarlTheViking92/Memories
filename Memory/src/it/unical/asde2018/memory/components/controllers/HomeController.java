@@ -55,6 +55,7 @@ public class HomeController {
 			// SEE WHERE WE NEED USERNAME AND CHANGE IT TO USER.USERNAME
 //			Credentials user = new Credentials(username, password);
 			Player player = new Player(username);
+			System.out.println("creo il player " + player.getUsername() + " ---- " + player);
 			session.setAttribute("user", player);
 			model.addAttribute("lobbies", lobbyService.getLobbies());
 			return "listLobbies";
@@ -62,18 +63,28 @@ public class HomeController {
 			model.addAttribute("errorLogin", "Wrong credentials login!");
 		return "index";
 	}
+	
+	/*@GetMapping("redirectList")
+	public String redirectList(HttpSession session, Model model) {
+//		model.addAttribute("lobbies", lobbyService.getLobbies());
+		return "listLobbies";
+	}*/
 
 	@RequestMapping("/logout")
 	public String logout(HttpSession session, Model model) {
 		session.invalidate();
 		return "index";
 	}
+	
+	@GetMapping("/result")
+	private String result(Model model, HttpSession session) {
+		return "result";
+	}
 
-	@PostMapping("/lobbyList")
+	@GetMapping("/lobbyList")
 	@ResponseBody
 	public String getLobbyList(HttpSession session, Model model) throws JsonProcessingException {
 		if (session.getAttribute("user") != null) {
-			System.out.println("get Lobby list");
 //			User user = (User) session.getAttribute("user");
 			JSONArray lob = lobbyList(session);
 /*			List<Lobby> lobbies = lobbyService.getLobbies();

@@ -10,9 +10,10 @@
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/resources/css/checkbox.css"
 	type="text/css">
-<script type="text/javascript" src="resources/js/lobby.js">
-// spostato in js/lobby.js
+<script type="text/javascript">
+	var myContextPath = "${pageContext.request.contextPath}"
 </script>
+<script type="text/javascript" src="resources/js/lobby.js"></script>
 
 </head>
 <body>
@@ -50,18 +51,19 @@
 												class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
 											</span>
 										</button> </a></li>
-								<li><div class="col-sm-12" id="difficulty" style="display: none">
+								<li><div class="col-sm-12" id="difficulty"
+										style="display: none">
 										<h5>Select Game Difficult</h5>
-										<div class="col-sm-12" >
+										<div class="col-sm-12">
 											<div class="radio">
-												<label> <input type="radio" name="o3" value="EASY">
-													<span class="cr"><i class="cr-icon fa fa-circle"></i></span>Easy
+												<label> <input type="radio" name="o3" value="EASY"
+													checked> <span class="cr"><i
+														class="cr-icon fa fa-circle"></i></span>Easy
 												</label>
 											</div>
 											<div class="radio">
-												<label> <input type="radio" name="o3" value="NORMAL"
-													checked> <span class="cr"><i
-														class="cr-icon fa fa-circle"></i></span>Normal
+												<label> <input type="radio" name="o3" value="NORMAL">
+													<span class="cr"><i class="cr-icon fa fa-circle"></i></span>Normal
 												</label>
 											</div>
 											<div class="radio">

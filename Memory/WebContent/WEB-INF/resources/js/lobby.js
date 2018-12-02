@@ -6,8 +6,9 @@ function updateLobby() {
 				contentType : 'application/json; charset=utf-8',
 				dataType : 'json',
 				success : function(data) {
-					console.log("SUCCESSO NELLA LOBBY");
+					console.log("AGGIORNO LOBBY");
 					console.log(data);
+				
 					var str = "";
 					var lobbySize = data.playerSize;
 					var game_button = $("#g_button");
@@ -16,6 +17,8 @@ function updateLobby() {
 						difficulty.css("display", "");
 						if (lobbySize == 2) {
 							game_button.css("display", "");
+						}else {
+							game_button.css("display", "none");
 						}
 					}
 					console.log(data.players);
@@ -88,25 +91,53 @@ function checkGameStarted() {
 }
 
 function getEventsFromServer() {
-	console.log("lobby get events");
+	console.log("lobby get events from server");
 	$.ajax({
+		type : "GET",
 		url : "getEvents",
 		data : {
 			eventSource : "lobby"
 		},
 		success : function(result) {
-			console.log("result ajax update lobby");
-			console.log(result);
-			if (result == "joined") {
-				updateLobby();
-			} else if (result == "gameStarted") {
-				console.log("YEAH");
-				checkGameStarted();
-			}
-			getEventsFromServer();
+			setTimeout(function() {
+//				console.log("result ajax lobby getevents");
+				console.log(result);
+				if (result == "joined" || result == "leftLobby") {
+					updateLobby();
+				}
+				if(result=="removedLobby"){
+					console.log(myContextPath+"/refreshLists");
+					var controller = myContextPath+"/refreshLists";
+					window.location = controller ;
+
+				}
+				if (result == "gameStarted") {
+					console.log("YEAH");
+					checkGameStarted();
+				}
+				
+				getEventsFromServer();
+			}, 1000);
 		},
-		error : function() {
-			// call events again after some time
+		error : function(jqXHR, exception) {
+			console.log("ERRORE GET EVENTS LOBBYJS");
+			var msg = '';
+			if (jqXHR.status === 0) {
+				msg = 'Not connect.\n Verify Network.';
+			} else if (jqXHR.status == 404) {
+				msg = 'Requested page not found. [404]';
+			} else if (jqXHR.status == 500) {
+				msg = 'Internal Server Error [500].';
+			} else if (exception === 'parsererror') {
+				msg = 'Requested JSON parse failed.';
+			} else if (exception === 'timeout') {
+				msg = 'Time out error.';
+			} else if (exception === 'abort') {
+				msg = 'Ajax request aborted.';
+			} else {
+				msg = 'Uncaught Error.\n' + jqXHR.responseText;
+			}
+			console.log(msg);
 			setTimeout(function() {
 				getEventsFromServer();
 			}, 5000);

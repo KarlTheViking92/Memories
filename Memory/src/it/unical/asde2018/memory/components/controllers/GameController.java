@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,85 +49,7 @@ public class GameController {
 		eventService.addEventSource(lobbyEvent);
 	}
 
-	@RequestMapping("/createNewLobby")
-	public String createNewLobby(@RequestParam String name, HttpSession session, Model model) {
-		// YOU HAVE TO SET THAT USER IS THE CREATOR
-		Player player = (Player) session.getAttribute("user");
 
-//		player.setCreator(true);
-//		session.setAttribute("user", player);
-		lobbyService.createLobby(name, player);
-		model.addAttribute("createdLobby", "Lobby " + name + " has been created by " + player.getUsername());
-		session.setAttribute("lobby", lobbyService.getLobby(name));
-		try {
-			eventService.addEvent(name, lobbyEvent, "newLobby");
-//			eventService.addEvent(id, eventSource, type);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-//		model.addAttribute("lobbies", lobbyService.getLobbies()); //NO NEED ANYMORE
-		return "lobby";
-	}
-
-	@PostMapping("/getLobby")
-	@ResponseBody
-	public String getLobby(HttpSession session, Model model) {
-		if (session.getAttribute("user") != null) {
-			System.out.println("get Lobby list");
-//	      User user = (User) session.getAttribute("user");
-			JSONObject lob = createLobbyJSON(session);
-			return lob.toJSONString();
-		}
-		return null;
-	}
-
-	@RequestMapping({ "/joinLobby" })
-	public String joinLobby(HttpServletRequest request, HttpSession session, Model model,
-			@RequestParam(value = "lobby", defaultValue = "") String lobbyName) {
-		System.out.println("JOIN LOBBY FUNCT " + lobbyName);
-		if (!lobbyService.fullLobby(lobbyName)) {
-			Player player = (Player) session.getAttribute("user");
-			lobbyService.joinLobby(lobbyName, player);
-//			Lobby lobby = lobbyService.getLobby(lobbyName);
-			try {
-				eventService.addEvent(lobbyName, lobbyEvent, "joined");
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-//			model.addAttribute("players", lobbyService.getPlayers(name));
-//			model.addAttribute("nameLobby", name);
-
-			session.setAttribute("lobby", lobbyService.getLobby(lobbyName));
-			System.out.println(lobbyService.getPlayers(lobbyName));
-			// session
-			return "lobby";
-		} else {
-			model.addAttribute("errorLobby", lobbyName + " is full");
-			model.addAttribute("lobbies", lobbyService.getLobbies());
-		}
-		return "lobby";
-	}
-
-	@RequestMapping({ "/leaveLobby" })
-	public String leaveLobby(HttpServletRequest request, HttpSession session, Model model,
-			@RequestParam(value = "lobby", defaultValue = "") String name) {
-		Player player = (Player) session.getAttribute("user");
-		lobbyService.leaveLobby(name, player);
-		try {
-			eventService.addEvent(session.getId(), lobbyEvent, "removedLobby");
-//			eventService.addEvent(id, eventSource, type);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		model.addAttribute("lobbies", lobbyService.getLobbies());
-		return "listLobbies";
-	}
-
-	@RequestMapping("/refreshLobby")
-	public String refreshLobby(HttpSession session, Model model) {
-		model.addAttribute("lobbies", lobbyService.getLobbies());
-		return "listLobbies";
-	}
 
 	@PostMapping("/createGame")
 	@ResponseBody
@@ -140,12 +63,12 @@ public class GameController {
 		if (lobbyPlayer.getCreator().equals(player)) {
 			System.out.println("il creatore vuole iniziare la partita");
 			if (lobbyPlayer.full()) {
-				System.out.println("Tutto bene creo la partita con difficoltà " + difficulty);
 				String gameID = gameService.createGame(lobbyPlayer.getPlayers(), Difficulty.valueOf(difficulty));
+				System.out.println("Tutto bene creo la partita con GAMEID " + gameID);
 //				model.addAttribute("game", gameID);
 				session.setAttribute("game", gameID);
 				try {
-					eventService.addEvent(gameID, lobbyEvent, "gameStarted");
+					eventService.addEvent(lobbyPlayer.getName(), lobbyEvent, "gameStarted");
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -160,10 +83,13 @@ public class GameController {
 
 	@GetMapping("getGame")
 	public String getGame(HttpSession session, Model model) {
+		System.out.println("GET GAME CONTROLLER");
 		Player player = (Player) session.getAttribute("user");
 		Game myGame = gameService.getMyGame(player.getUsername());
 		session.setAttribute("game", myGame.getGameID());
 		model.addAttribute("cards", gameService.getCards((String) session.getAttribute("game")));
+		model.addAttribute("inGame", "true");
+		System.out.println("END GET GAME CONTROLLER");
 		return "memory";
 	}
 
@@ -173,10 +99,18 @@ public class GameController {
 //		System.out.println("pick card function");
 //		System.out.println("id : " + imageId);
 //		System.out.println("counter " + position);
+		String gameID = (String)session.getAttribute("game");
+		Game game = gameService.getGame(gameID);
+		System.out.println(game.getGameID());
 		String result = gameService.pickCard((String) session.getAttribute("game"),
 				(Player) session.getAttribute("user"), imageId, position);
 		if (result.equals("win")) {
 			System.out.println("Ha vinto " + ((Player) session.getAttribute("user")).getUsername());
+			try {
+				eventService.addEvent(game.getGameID(), gameEvent, "finishGame");
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		return result;
 	}
@@ -185,60 +119,68 @@ public class GameController {
 	@ResponseBody
 	public String checkGameStarted(HttpSession session, Model model) {
 		Player player = (Player) session.getAttribute("user");
+		System.out.println("CHECK GAME " + player.getUsername());
 		return gameService.gameReady(player.getUsername());
+	}
+
+	@GetMapping("/getResult")
+	@ResponseBody
+	public String getResults(HttpSession session, Model model) {
+		Player player = (Player) session.getAttribute("user");
+		String gameID = (String) session.getAttribute("game");
+		Game game = gameService.getGame(gameID);
+		JSONObject jsonGame = new JSONObject();
+		JSONArray array = new JSONArray();
+		for (Player p : game.getPlayers()) {
+			JSONObject obj = new JSONObject();
+			obj.put("user", p.getUsername());
+			if (p.getUsername() == game.getWinner()) {
+				obj.put("status", "win");
+			} else
+				obj.put("status", "lose");
+			array.add(obj);
+		}
+		jsonGame.put("players", array);
+		jsonGame.put("time", game.getResultTime());
+
+		return jsonGame.toJSONString();
 	}
 
 	@GetMapping("/getEvents")
 	@ResponseBody
+	@Async
 	public DeferredResult<String> getEvents(HttpSession session, @RequestParam String eventSource) {
 
-		System.out.println("CALL GET EVENTS Controller");
-		System.out.println("eventSource " + eventSource);
+//		System.out.println("CALL GET EVENTS Controller");
+//		System.out.println("eventSource " + eventSource);
 		DeferredResult<String> output = new DeferredResult<>();
-		ForkJoinPool.commonPool().submit(() -> {
-			try {
-//				Player p = (Player) session.getAttribute("user");
-//				System.out.println("evento richiesto da " + p.getUsername());
-//				Lobby lobby = (Lobby) session.getAttribute("lobby");
-//				Game game = (Game) session.getAttribute("game");
-//				switch(eventSource) {
-//				case "game":
-//					break;
-//				case "lobby":
-//					System.out.println("get lobby event" + lobby.getName());
-//					output.setResult(eventService.nextEvent(lobby.getName(), eventSource));
-//					break;
-//				default:
-//					break;
-//				}
-				output.setResult(eventService.nextEvent(session.getId(), eventSource));
-			} catch (InterruptedException e) {
-				output.setResult("An error occurred during event retrieval");
+//		ForkJoinPool.commonPool().submit(() -> {
+//
+//		});
+		System.out.println(
+				"chi cazzo è " + ((Player) session.getAttribute("user")).getUsername() + " +++ " + eventSource);
+		String eventTarget = "";
+		if (eventSource.equals(gameEvent)) {
+			eventTarget = (String) session.getAttribute("game");
+		} else if (eventSource.equals(lobbyEvent)) {
+			if (((Lobby) session.getAttribute("lobby")).getName() != null) {
+				eventTarget = ((Lobby) session.getAttribute("lobby")).getName();
 			}
-		});
+		}
+		try {
+//			eventService.nextEvent(user_id, object_id, eventSource);
+			String event = eventService.nextEvent(session.getId(), eventTarget, eventSource);
+			Player attribute = (Player) session.getAttribute("user");
+			System.out.println(" preleva l'evento " + attribute.getUsername() + " --- per il target  " + eventTarget
+					+ " --- event " + event);
+			output.setResult(event);
+		} catch (InterruptedException e) {
+			System.out.println("event exception");
+			e.printStackTrace();
+			output.setResult("An error occurred during event retrieval");
+		}
 
 		return output;
 	}
 
-	@SuppressWarnings("unchecked")
-	private JSONObject createLobbyJSON(HttpSession session) {
-
-		JSONObject obj = new JSONObject();
-		Lobby lobby = (Lobby) session.getAttribute("lobby");
-		Player cUser = (Player) session.getAttribute("user");
-		List<Player> players = lobbyService.getPlayers(lobby.getName());
-		obj.put("user", cUser.getUsername());
-		obj.put("creator", lobby.getCreator().getUsername());
-		obj.put("playerSize", lobby.getNumberOfPlayers());
-//		jsonArray.add(obj);
-		JSONArray jsonArray = new JSONArray();
-		System.out.println("lobby: " + lobby.getName());
-		for (Player player : players) {
-			JSONObject jsonPlayer = new JSONObject();
-			jsonPlayer.put("player", player.getUsername());
-			jsonArray.add(jsonPlayer);
-		}
-		obj.put("players", jsonArray);
-		return obj;
-	}
 }

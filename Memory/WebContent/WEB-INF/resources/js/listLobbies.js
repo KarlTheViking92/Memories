@@ -1,8 +1,9 @@
-
+var count = 0;
 function updateLobbyList() {
+	console.log("count : " +count);
 	$
 			.ajax({
-				type : "POST",
+				type : "GET",
 				url : "lobbyList",
 				contentType : 'application/json; charset=utf-8',
 				dataType : 'json',
@@ -43,6 +44,7 @@ function updateLobbyList() {
 						str + "</tr>";
 					}
 					$("#lobby-container").html(str);
+					count++;
 
 				},
 				error : function(jqXHR, exception) {
@@ -67,7 +69,7 @@ function updateLobbyList() {
 				}
 			});
 }
-
+/*
 function getEventsFromServer() {
 	console.log("lobby get events");
 	$.ajax({
@@ -76,12 +78,15 @@ function getEventsFromServer() {
 			eventSource : "lobby"
 		},
 		success : function(result) {
-			console.log("result ajax update lobby list");
-			console.log(result);
-			if (result == "newLobby" || result == "removedLobby") {
-				updateLobbyList();
-			}
-			getEventsFromServer();
+			setTimeout(function(){
+//				console.log("result ajax update lobby list");
+				console.log(result);
+				if (result == "newLobby" || result == "removedLobby") {
+					console.log("update lobby");
+					updateLobbyList();
+				}
+				getEventsFromServer();
+			}, 1000);
 		},
 		error : function() {
 			// call events again after some time
@@ -90,8 +95,18 @@ function getEventsFromServer() {
 			}, 5000);
 		}
 	});
+//	console.log("end get events");
+}*/
+
+function diocane(){
+	setInterval(function (){
+		updateLobbyList();
+	}, 2000);
 }
+
 $(document).ready(function() {
 	updateLobbyList();
-	getEventsFromServer();
+	diocane();
+	console.log("on ready listlobby js");
+	console.log("end ready");
 });
