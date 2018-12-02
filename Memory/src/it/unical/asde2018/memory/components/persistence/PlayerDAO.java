@@ -64,8 +64,9 @@ public class PlayerDAO {
 		System.out.println("TRASU++++++++++++++++");
 		Query<Player> query = session.createQuery("FROM Player as p where p.username=:user",Player.class)
 				.setParameter("user", username);
+		Long playerID = query.uniqueResult().getId();
 		session.close();
-		return query.uniqueResult().getId();
+		return playerID;
 	}
 
 }
