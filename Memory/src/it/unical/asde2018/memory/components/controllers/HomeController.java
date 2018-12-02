@@ -2,7 +2,6 @@ package it.unical.asde2018.memory.components.controllers;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONArray;
@@ -11,17 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import it.unical.asde2018.memory.components.services.GameService;
 import it.unical.asde2018.memory.components.services.LobbyService;
 import it.unical.asde2018.memory.components.services.LoginService;
+import it.unical.asde2018.memory.model.Game;
 import it.unical.asde2018.memory.model.Lobby;
 import it.unical.asde2018.memory.model.Player;
 
@@ -32,6 +30,8 @@ public class HomeController {
 	private LoginService loginService;
 	@Autowired
 	private LobbyService lobbyService;
+	@Autowired
+	private GameService gameService;
 
 	@GetMapping("/")
 	private String goToIndex(Model model, HttpSession session) {
@@ -40,8 +40,8 @@ public class HomeController {
 
 	@GetMapping("/registration")
 	private String registration(Model model, @RequestParam String username, @RequestParam String password) {
-		if (!loginService.login(username, password)) {
-			loginService.setCredentials(username, password);
+		if (!loginService.yetAnUser(username)) {
+			loginService.savePlayer(username, password);
 			model.addAttribute("errorRegistration", username + " you are now registed, you can Sign in");
 		} else
 			model.addAttribute("errorRegistration", username + " has already been chosen has username");
@@ -51,10 +51,9 @@ public class HomeController {
 	@GetMapping("/login")
 	private String login(Model model, HttpSession session, @RequestParam String username,
 			@RequestParam String password) {
-		if (loginService.login(username, password)) {
-			// SEE WHERE WE NEED USERNAME AND CHANGE IT TO USER.USERNAME
-//			Credentials user = new Credentials(username, password);
-			Player player = new Player(username);
+		if (loginService.playerExists(username, password)) {
+			Long playerId = loginService.getPlayerId(username);
+			Player player = new Player(playerId,username,password);
 			System.out.println("creo il player " + player.getUsername() + " ---- " + player);
 			session.setAttribute("user", player);
 			model.addAttribute("lobbies", lobbyService.getLobbies());
@@ -151,15 +150,48 @@ public class HomeController {
 		return "rules";
 	}
 
-//	@RequestMapping("/matchHistory")
-//	public String matchHistory(HttpSession session, Model model) {
-//		model.addAttribute("games", gameService.init());
-//		List<Player> list = loginService.getAllUsers();
-//		System.out.println("__________-----__----" + list.size());
-//		for (Player player : list) {
+	@RequestMapping("/matchHistory")
+	public String matchHistory(HttpSession session, Model model) {
+		System.out.println("ARRIVOOOOOOOOOOOOOOOoo");
+//		List<Player> playerList = loginService.getAllUsers();
+//		for (Player player : playerList) {
 //			System.out.println(player.getUsername());
 //		}
-//		return "matchHistory";
-//	}
+
+		List<Game> gamesList = gameService.getGamesOfAUser((Player)session.getAttribute("user"));
+		for (Game game : gamesList) {
+			System.out.println("----------------------------------------------------------");
+			System.out.println(game);
+			System.out.println(game.getWinner());
+			System.out.println("------------------------");
+		}
+		model.addAttribute("gamesOfUser",gamesList);
+
+//		System.out.println("Lista delle partite: ");
+//		List<Game> allGames = gameService.getAllGames();
+//		for (Game game : allGames) {
+//			System.out.println("----------------------------------------------------------");
+//			System.out.println(game);
+//			System.out.println("------------------------");
+//		}
+
+//		List<Impiegato> impiegati= progImpService.listaImpiegati();
+//		for (Impiegato impiegato : impiegati) {
+//			System.out.println("+++");
+//			System.out.println(impiegato.getNome());
+//			System.out.println(impiegato.getProgetti());
+//		}
+//		List<Progetto> progetti= progImpService.listaProgetti();
+//		for (Progetto progetto : progetti) {
+//			System.out.println("---");
+//			System.out.println(progetto.getNome());
+//			System.out.println(progetto.getImpiegati());
+//		}
+
+
+
+		//	model.addAttribute("gamesList", gamesList);
+		return "matchHistory";
+	}
 
 }

@@ -20,9 +20,7 @@ public class PlayerDAO {
 	public void savePlayer(Player player) {
 		System.out.println("Player DAO " + player);
 		Session session = sessionFactory.openSession();
-
 		Transaction transaction = null;
-
 		try {
 			transaction = session.beginTransaction();
 			session.save(player);
@@ -33,16 +31,41 @@ public class PlayerDAO {
 		}
 		session.close();
 	}
+	
+	public boolean exists(String username, String password) {
+		Session session = sessionFactory.openSession();
+		Query<Player> query = session
+				.createQuery("from Player as p where p.username=:user and p.password=:pass", Player.class)
+				.setParameter("user", username).setParameter("pass", password);
+		boolean result = query.uniqueResult() != null;
+		session.close();
+		return result;
+	}
+	
+	public boolean yetAnUser(String username) {
+		Session session = sessionFactory.openSession();
+		Query<Player> query = session.createQuery("from Player as p where p.username=:user", Player.class)
+				.setParameter("user", username);
+		boolean result = query.uniqueResult() != null;
+		session.close();
+		return result;
+	}
 
 	public List<Player> getAllExistentUsers() {
 		Session session = sessionFactory.openSession();
-
 		Query<Player> query = session.createQuery("FROM Player", Player.class);
-
 		List<Player> players = query.list();
 		session.close();
-
 		return players;
+	}
+	
+	public Long getPlayerIdDAO(String username) {
+		Session session = sessionFactory.openSession();
+		System.out.println("TRASU++++++++++++++++");
+		Query<Player> query = session.createQuery("FROM Player as p where p.username=:user",Player.class)
+				.setParameter("user", username);
+		session.close();
+		return query.uniqueResult().getId();
 	}
 
 }

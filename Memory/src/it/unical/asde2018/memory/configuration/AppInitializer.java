@@ -2,8 +2,6 @@ package it.unical.asde2018.memory.configuration;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-import it.unical.asde2018.memory.configuration.DispatcherConfiguration;
-
 public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 	@Override

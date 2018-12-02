@@ -20,14 +20,11 @@ public class GameDAO {
 
 	public void saveGame(Game game) {
 		Session session = sessionFactory.openSession();
-
 		Transaction transaction = null;
-
 		try {
 			transaction = session.beginTransaction();
 			session.save(game);
 			transaction.commit();
-
 		} catch (Exception e) {
 			transaction.rollback();
 		}
@@ -36,11 +33,17 @@ public class GameDAO {
 
 	public List<Game> getGamesOfAUser(Player player) {
 		Session session = sessionFactory.openSession();
-
 		Query<Game> query = session
 				.createQuery("select g from Game g join g.players p where p.id = :userId", Game.class)
 				.setParameter("userId", player.getId());
-
+		List<Game> result = query.list();
+		session.close();
+		return result;
+	}
+	
+	public List<Game> getAllGames() {
+		Session session = sessionFactory.openSession();
+		Query<Game> query = session.createQuery("from Game g", Game.class);
 		List<Game> result = query.list();
 		session.close();
 		return result;

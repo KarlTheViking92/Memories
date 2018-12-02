@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import it.unical.asde2018.memory.components.persistence.GameDAO;
-import it.unical.asde2018.memory.components.persistence.PlayerDAO;
 import it.unical.asde2018.memory.model.Game;
 import it.unical.asde2018.memory.model.Game.Difficulty;
 import it.unical.asde2018.memory.model.MyImage;
@@ -31,10 +31,7 @@ public class GameService {
 	}
 
 	public String createGame(List<Player> players, Difficulty d) {
-//		System.out.println("CREATING GAME DIFFICULTY " + d);
-//		System.out.println("CREATING GAME DIFFICULTY TOS " + d.toString());
 		String gameID = UUID.randomUUID().toString();
-
 		Game game = new Game(gameID, players, d);
 		games.put(gameID, game);
 		return gameID;
@@ -58,10 +55,13 @@ public class GameService {
 			}
 		}
 		return null;
-		
 	}
 	
-	public Game getGame(String gameID) {
+//	public Game getGame(String gameID) {
+//		return games.get(gameID);
+//	}
+	
+	public Game getGameByID(String gameID) {
 		return games.get(gameID);
 	}
 
@@ -74,6 +74,18 @@ public class GameService {
 			}
 		}
 		return "false";
+	}
+	
+	public void saveGame(Game game) {
+		gameDAO.saveGame(game);
+	}
+	
+	public List<Game> getGamesOfAUser(Player player){
+		return gameDAO.getGamesOfAUser(player);
+	}
+	
+	public List<Game> getAllGames(){
+		return gameDAO.getAllGames();
 	}
 
 }

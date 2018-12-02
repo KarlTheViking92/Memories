@@ -26,9 +26,7 @@ public class LobbyService {
 		lobbies.add(new Lobby("Venus", new Player("ciccione"), 2));
 		lobbies.add(new Lobby("Mars", new Player("giggiino"), 2));*/
 		
-		lobby_map.put("Saturn", new Lobby("Saturn", new Player("alex")));
-		lobby_map.put("Venus", new Lobby("Venus", new Player("ciccione")));
-		lobby_map.put("Mars", new Lobby("Mars", new Player("giggiino")));
+		
 		
 	}
 

@@ -1,10 +1,6 @@
 package it.unical.asde2018.memory.components.controllers;
 
-import java.util.List;
-import java.util.concurrent.ForkJoinPool;
-
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONArray;
@@ -15,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.async.DeferredResult;
@@ -100,7 +95,7 @@ public class GameController {
 //		System.out.println("id : " + imageId);
 //		System.out.println("counter " + position);
 		String gameID = (String)session.getAttribute("game");
-		Game game = gameService.getGame(gameID);
+		Game game = gameService.getGameByID(gameID);
 		System.out.println(game.getGameID());
 		String result = gameService.pickCard((String) session.getAttribute("game"),
 				(Player) session.getAttribute("user"), imageId, position);
@@ -108,6 +103,7 @@ public class GameController {
 			System.out.println("Ha vinto " + ((Player) session.getAttribute("user")).getUsername());
 			try {
 				eventService.addEvent(game.getGameID(), gameEvent, "finishGame");
+				gameService.saveGame(gameService.getGameByID(gameID));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -128,13 +124,13 @@ public class GameController {
 	public String getResults(HttpSession session, Model model) {
 		Player player = (Player) session.getAttribute("user");
 		String gameID = (String) session.getAttribute("game");
-		Game game = gameService.getGame(gameID);
+		Game game = gameService.getGameByID(gameID);
 		JSONObject jsonGame = new JSONObject();
 		JSONArray array = new JSONArray();
 		for (Player p : game.getPlayers()) {
 			JSONObject obj = new JSONObject();
 			obj.put("user", p.getUsername());
-			if (p.getUsername() == game.getWinner()) {
+			if (p.getId() == game.getWinner()) {
 				obj.put("status", "win");
 			} else
 				obj.put("status", "lose");
@@ -158,7 +154,7 @@ public class GameController {
 //
 //		});
 		System.out.println(
-				"chi cazzo è " + ((Player) session.getAttribute("user")).getUsername() + " +++ " + eventSource);
+				"chi cazzo ï¿½ " + ((Player) session.getAttribute("user")).getUsername() + " +++ " + eventSource);
 		String eventTarget = "";
 		if (eventSource.equals(gameEvent)) {
 			eventTarget = (String) session.getAttribute("game");
