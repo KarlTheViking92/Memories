@@ -56,11 +56,7 @@ public class GameService {
 		}
 		return null;
 	}
-	
-//	public Game getGame(String gameID) {
-//		return games.get(gameID);
-//	}
-	
+
 	public Game getGameByID(String gameID) {
 		return games.get(gameID);
 	}
@@ -74,6 +70,10 @@ public class GameService {
 			}
 		}
 		return "false";
+	}
+	
+	public void deleteGame(String game) {
+		games.remove(game);
 	}
 	
 	public void saveGame(Game game) {

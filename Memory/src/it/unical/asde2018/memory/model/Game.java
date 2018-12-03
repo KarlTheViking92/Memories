@@ -172,6 +172,7 @@ public class Game {
 	}
 
 	public long getResultTime() {
-		return TimeUnit.MILLISECONDS.toSeconds((end_time.getTime() - init_time.getTime()));
+		this.time = TimeUnit.MILLISECONDS.toSeconds((end_time.getTime() - init_time.getTime()));
+		return time;
 	}
 }

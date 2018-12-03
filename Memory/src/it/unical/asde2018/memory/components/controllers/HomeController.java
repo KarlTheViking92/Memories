@@ -36,6 +36,9 @@ public class HomeController {
 
 	@GetMapping("/")
 	private String goToIndex(Model model, HttpSession session) {
+		if(session.getAttribute("user") != null) {
+			return "listLobbies";
+		}
 		return "index";
 	}
 

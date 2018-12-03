@@ -15,14 +15,8 @@
 </head>
 <body>
 	<jsp:include page="navbar.jsp" />
-	<div class="container">
-		<div class="row">
-			<div class="col-md-4 col-md-offset-2">
-				<h1>
-					<strong>Game Review</strong>
-				</h1>
-			</div>
-		</div>
+	<div class="container" style="margin-top: 10px;">
+		<h1>Game Review</h1>
 
 
 		<!-- <hr>
@@ -51,36 +45,36 @@
 			<section class="content">
 				<div class="col-md-8 col-md-offset-2">
 					<div id="lose" hidden="true">
-						<h1>
-							<c:forEach var="i" begin="1" end="3">
+						<h2 align="center">
+							<%-- <c:forEach var="i" begin="1" end="3">
 								<i style="color: red;" class="fa fa-frown-o fa-${i }x"
 									aria-hidden="true"></i>
 							</c:forEach>
-
+ --%>						<i style="color: red;" class="fas fa-frown-open fa-7x"></i>
 							<strong> You Lose </strong>
-							<c:forEach var="i" begin="1" end="3" step="1">
+							<i style="color: red;" class="fas fa-frown-open fa-7x"></i>
+						<%-- 	<c:forEach var="i" begin="1" end="3" step="1">
 								<i style="color: red;" class="fa fa-frown-o fa-${4-i }x"
 									aria-hidden="true"></i>
-							</c:forEach>
-						</h1>
+							</c:forEach> --%>
+						</h2>
 					</div>
 
-					<div id="win" hidden="false">
-						<h1>
-							<c:forEach var="i" begin="1" end="3">
-								<i style="color: green;" class="fa fa-smile-o fa-${i }x"
-									aria-hidden="true"></i>
-							</c:forEach>
-
+					<div id="win" hidden="true">
+						<h2 align="center">
+							<%-- 		<c:forEach var="i" begin="1" end="3">
+									<i style="color: green;" class="fas fa-smile-beam fa-${i }x"></i>
+							</c:forEach> --%>
+							<i style="color: green;" class="fas fa-smile-beam fa-7x"></i>
 							<strong> You Win </strong>
-							<c:forEach var="i" begin="1" end="3" step="1">
+							<i style="color: green;" class="fas fa-smile-beam fa-7x"></i>
+							<%-- <c:forEach var="i" begin="1" end="3" step="1">
 								<i style="color: green;" class="fa fa-smile-o fa-${4-i }x"
 									aria-hidden="true"></i>
-							</c:forEach>
-						</h1>
+							</c:forEach> --%>
+						</h2>
 					</div>
 
-					<hr>
 					<div class="panel panel-default">
 						<div class="panel-body">
 							<!-- <div class="pull-right">
@@ -104,10 +98,8 @@
 									<col width="80">
 									<thead>
 										<tr>
-											<th colspan=2>Player <i class="fa fa-user-o"
-												aria-hidden="true"></i></th>
-
-											<th>Time <i class="fa fa-clock-o" aria-hidden="true"></i></th>
+											<th colspan=2><span>Player <i class="far fa-user"></i></span> </th>
+											<th><span>Time <i class="far fa-clock"></i></span></th>
 											<th>Status</th>
 										</tr>
 									</thead>
@@ -128,7 +120,7 @@
 		</div>
 		<div class="row">
 			<div class="col-md-2 col-md-offset-2">
-				<button type="button" id="exit" class="btn btn-primary">Exit</button>
+				<button type="button" id="exit" class="btn btn-primary">Return to Homepage</button>
 			</div>
 		</div>
 	</div>

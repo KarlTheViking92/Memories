@@ -46,9 +46,8 @@
 								<li><a
 									href="${pageContext.request.contextPath}/leaveLobby?lobby=${lobby.name}"
 									class="table-link danger"><button style="font-size: 10px">
-											Leave Lobby <span class="fa-stack"> <i
-												class="fa fa-square fa-stack-2x"></i> <i
-												class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
+											Leave Lobby <span class="fa-stack"><i class="fa fa-trash"
+												aria-hidden="true"></i> 
 											</span>
 										</button> </a></li>
 								<li><div class="col-sm-12" id="difficulty"

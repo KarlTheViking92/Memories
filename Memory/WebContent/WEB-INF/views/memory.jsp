@@ -62,6 +62,6 @@
 		</div>
 	</div>
 	<!-- End Wrap -->
-	<h1>${gameId}</h1>
+	<%-- <h1>${gameId}</h1> --%>
 </body>
 </html>

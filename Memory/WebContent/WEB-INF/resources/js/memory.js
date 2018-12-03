@@ -14,7 +14,11 @@ function getEventsFromServer() {
 				console.log(result);
 				if (result == "finishGame") {
 					console.log("this game is over");
-					window.location.href = "./result"
+					$.ajax({
+						url:"saveResults",
+						type : "GET",
+					});
+					window.location.href = "./result";
 				}
 
 				getEventsFromServer();
@@ -53,8 +57,9 @@ $(document).ready(function() {
 		var $card = $(this);
 		console.log($card);
 		var clickedCard = $(".card").find(".picked:not(.matched)").length;
+		var selected = $(".card").find(".selected").parent().attr("data-counter");
 		console.log("pause var " + pause);
-		if (!pause) {
+		if (selected != $card.attr("data-counter") && !pause) {
 			$.ajax({
 				type : "POST",
 				url : "pickCard",
@@ -67,6 +72,7 @@ $(document).ready(function() {
 					switch (data) {
 					case "selected":
 						$card.find(".inside").addClass("picked");
+						$card.find(".inside").addClass("selected");
 						break;
 					case "found-pair":
 						$card.find(".inside").addClass("picked");
@@ -81,6 +87,7 @@ $(document).ready(function() {
 						pause = true;
 						setTimeout(function() {
 							$(".card").find(".inside").removeClass("picked");
+							$(".card").find(".inside").removeClass("selected");
 							pause = false;
 						}, 1000);
 						break;

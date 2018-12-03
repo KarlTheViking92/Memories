@@ -44,8 +44,6 @@ public class GameController {
 		eventService.addEventSource(lobbyEvent);
 	}
 
-
-
 	@PostMapping("/createGame")
 	@ResponseBody
 	public String createGame(HttpSession session, Model model, @RequestParam String difficulty) {
@@ -97,7 +95,7 @@ public class GameController {
 //		System.out.println("pick card function");
 //		System.out.println("id : " + imageId);
 //		System.out.println("counter " + position);
-		String gameID = (String)session.getAttribute("game");
+		String gameID = (String) session.getAttribute("game");
 		Game game = gameService.getGameByID(gameID);
 		System.out.println(game.getGameID());
 		String result = gameService.pickCard((String) session.getAttribute("game"),
@@ -105,13 +103,29 @@ public class GameController {
 		if (result.equals("win")) {
 			System.out.println("Ha vinto " + ((Player) session.getAttribute("user")).getUsername());
 			try {
-				gameService.saveGame(gameService.getGameByID(gameID));
 				eventService.addEvent(game.getGameID(), gameEvent, "finishGame");
+				session.setAttribute("resultLastGame", getResultsJSON(session, model));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
 		return result;
+	}
+	
+	@GetMapping("saveResults")
+	public void asd(HttpSession session, Model model) {
+		System.out.println("salvo i risultati");
+		System.out.println("asdasdad "+ ((Player)session.getAttribute("user")).getUsername()  + " ---- "+ getResultsJSON(session, model) );
+		session.setAttribute("resultLastGame", getResultsJSON(session, model));
+	}
+	
+	private String saveAndDeleteGame(HttpSession session, Model model) {
+		String gameID = (String) session.getAttribute("game");
+		Game game = gameService.getGameByID(gameID);
+		gameService.saveGame(game);
+		gameService.deleteGame(gameID);
+		session.removeAttribute("game");
+		return "";
 	}
 
 	@GetMapping("/checkGameStarted")
@@ -121,10 +135,18 @@ public class GameController {
 		System.out.println("CHECK GAME " + player.getUsername());
 		return gameService.gameReady(player.getUsername());
 	}
-
+	
 	@GetMapping("/getResult")
 	@ResponseBody
 	public String getResults(HttpSession session, Model model) {
+//		saveAndDeleteGame(session, model);
+		String tmp = (String) session.getAttribute("resultLastGame");
+		System.out.println(tmp);
+		return tmp;
+	}
+
+	@SuppressWarnings("unchecked")
+	public String getResultsJSON(HttpSession session, Model model) {
 		Player player = (Player) session.getAttribute("user");
 		String gameID = (String) session.getAttribute("game");
 		Game game = gameService.getGameByID(gameID);
@@ -141,6 +163,8 @@ public class GameController {
 		}
 		jsonGame.put("players", array);
 		jsonGame.put("time", game.getResultTime());
+		if (player.getId() == game.getWinner())
+			jsonGame.put("winner", "true");
 
 		return jsonGame.toJSONString();
 	}
