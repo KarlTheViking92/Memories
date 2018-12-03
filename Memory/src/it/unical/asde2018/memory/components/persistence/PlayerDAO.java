@@ -25,7 +25,6 @@ public class PlayerDAO {
 			transaction = session.beginTransaction();
 			session.save(player);
 			transaction.commit();
-
 		} catch (Exception e) {
 			transaction.rollback();
 		}

@@ -153,27 +153,31 @@ public class HomeController {
 	@RequestMapping("/matchHistory")
 	public String matchHistory(HttpSession session, Model model) {
 		System.out.println("ARRIVOOOOOOOOOOOOOOOoo");
-//		List<Player> playerList = loginService.getAllUsers();
-//		for (Player player : playerList) {
-//			System.out.println(player.getUsername());
-//		}
-
-		List<Game> gamesList = gameService.getGamesOfAUser((Player)session.getAttribute("user"));
-		for (Game game : gamesList) {
-			System.out.println("----------------------------------------------------------");
-			System.out.println(game);
-			System.out.println(game.getWinner());
-			System.out.println("------------------------");
+		
+		System.out.println("UTENTI------START");
+		List<Player> playerList = loginService.getAllUsers();
+		for (Player player : playerList) {
+			System.out.println(player.getUsername());
 		}
-		model.addAttribute("gamesOfUser",gamesList);
+		System.out.println("UTENTI------STOP");
 
-//		System.out.println("Lista delle partite: ");
-//		List<Game> allGames = gameService.getAllGames();
-//		for (Game game : allGames) {
+//		List<Game> gamesList = gameService.getGamesOfAUser((Player)session.getAttribute("user"));
+//		for (Game game : gamesList) {
 //			System.out.println("----------------------------------------------------------");
 //			System.out.println(game);
+//			System.out.println(game.getWinner());
 //			System.out.println("------------------------");
 //		}
+//		model.addAttribute("gamesOfUser",gamesList);
+
+		System.out.println("PARITE------START");
+		List<Game> allGames = gameService.getAllGames();
+		for (Game game : allGames) {
+			System.out.println("----------------------------------------------------------");
+			System.out.println(game);
+			System.out.println("------------------------");
+		}
+		System.out.println("PARITE------STOP");
 
 //		List<Impiegato> impiegati= progImpService.listaImpiegati();
 //		for (Impiegato impiegato : impiegati) {

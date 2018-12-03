@@ -17,13 +17,13 @@ public class GameDAO {
 
 	@Autowired
 	private SessionFactory sessionFactory;
-
+	
 	public void saveGame(Game game) {
 		Session session = sessionFactory.openSession();
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
-			session.save(game);
+			session.persist(game);
 			transaction.commit();
 		} catch (Exception e) {
 			transaction.rollback();

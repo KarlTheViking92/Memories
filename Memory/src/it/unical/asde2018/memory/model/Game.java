@@ -41,7 +41,7 @@ public class Game {
 	private String gameID;
 
 	//DA_CONTROLLARE
-	@ManyToMany(cascade = CascadeType.MERGE,fetch=FetchType.EAGER)
+	@ManyToMany(cascade = CascadeType.ALL,fetch=FetchType.EAGER)
 	@JoinTable(name = "PLAYER_GAME",
 	joinColumns = { @JoinColumn(name = "game_id") },
 	inverseJoinColumns = {@JoinColumn(name = "player_id")})
