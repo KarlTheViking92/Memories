@@ -38,6 +38,7 @@ public class GameController {
 	private final static String gameEvent = "game";
 	private final static String lobbyEvent = "lobby";
 
+	
 	@PostConstruct
 	private void init() {
 		eventService.addEventSource(gameEvent);
