@@ -2,7 +2,6 @@ package it.unical.asde2018.memory.components.controllers;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.json.simple.JSONArray;
@@ -11,14 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import it.unical.asde2018.memory.components.services.LobbyService;
 import it.unical.asde2018.memory.components.services.LoginService;
@@ -63,19 +59,19 @@ public class HomeController {
 			model.addAttribute("errorLogin", "Wrong credentials login!");
 		return "index";
 	}
-	
-	/*@GetMapping("redirectList")
+
+	@GetMapping("redirectList")
 	public String redirectList(HttpSession session, Model model) {
-//		model.addAttribute("lobbies", lobbyService.getLobbies());
+		model.addAttribute("lobbies", lobbyService.getLobbies());
 		return "listLobbies";
-	}*/
+	}
 
 	@RequestMapping("/logout")
 	public String logout(HttpSession session, Model model) {
 		session.invalidate();
 		return "index";
 	}
-	
+
 	@GetMapping("/result")
 	private String result(Model model, HttpSession session) {
 		return "result";
@@ -87,11 +83,10 @@ public class HomeController {
 		if (session.getAttribute("user") != null) {
 //			User user = (User) session.getAttribute("user");
 			JSONArray lob = lobbyList(session);
-/*			List<Lobby> lobbies = lobbyService.getLobbies();
-			String lob = "[";
-			for (Lobby lobby : lobbies) {
-				lob += new ObjectMapper().writeValueAsString(lobby)+",";
-			}*/
+			/*
+			 * List<Lobby> lobbies = lobbyService.getLobbies(); String lob = "["; for (Lobby
+			 * lobby : lobbies) { lob += new ObjectMapper().writeValueAsString(lobby)+","; }
+			 */
 			return lob.toJSONString();
 		}
 		return null;
@@ -141,6 +136,11 @@ public class HomeController {
 		return "createLobby";
 	}
 
+	@RequestMapping("/refreshLobby")
+	public String refreshLobby(Model model) {
+		model.addAttribute("lobbies", lobbyService.getLobbies());
+		return "listLobbies";
+	}
 	/*
 	 * @RequestMapping({ "/startGame" }) public String joinLobby(HttpServletRequest
 	 * request, HttpSession session, Model model) { return "game"; }
@@ -151,15 +151,15 @@ public class HomeController {
 		return "rules";
 	}
 
-//	@RequestMapping("/matchHistory")
-//	public String matchHistory(HttpSession session, Model model) {
-//		model.addAttribute("games", gameService.init());
-//		List<Player> list = loginService.getAllUsers();
-//		System.out.println("__________-----__----" + list.size());
-//		for (Player player : list) {
-//			System.out.println(player.getUsername());
-//		}
-//		return "matchHistory";
-//	}
+	@RequestMapping("/matchHistory")
+	public String matchHistory(HttpSession session, Model model) {
+		// model.addAttribute("games", gameService.init());
+		// List<Player> list = loginService.getAllUsers();
+		// System.out.println("__________-----__----" + list.size());
+		// for (Player player : list) {
+		// System.out.println(player.getUsername());
+		// }
+		return "matchHistory";
+	}
 
 }

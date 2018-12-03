@@ -20,10 +20,6 @@
 </head>
 <body>
 	<jsp:include page="navbar.jsp" />
-	<div class="page-title">
-		<h1 align="center">LOBBIES</h1>
-	</div>
-
 
 	<div class="container" style="background-color: lightgrey">
 		<div class="row">
@@ -31,6 +27,11 @@
 				<div class="main-box clearfix">
 					<div class="table-responsive">
 						<table class="table user-list">
+							<thead>
+								<tr>
+									<th><h1 align="left">List of Lobbies:</h1></th>
+								</tr>
+							</thead>
 							<thead>
 								<tr>
 									<th><span>User</span></th>
@@ -48,9 +49,13 @@
 			</div>
 		</div>
 	</div>
+	
+	<br>
+	<h4 align="center">
+		<a href="${pageContext.request.contextPath}/refreshLobby"><button
+				class="btn btn-primary mb-0">REFRESH</button></a>
+	</h4>
+	<br>
 
-
-
-	<a href="${pageContext.request.contextPath}/refreshLobby">REFRESH</a>
 </body>
 </html>

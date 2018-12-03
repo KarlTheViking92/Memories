@@ -9,14 +9,14 @@
 					class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" class="active"
+			<a class="navbar-brand" class="active" 
 				href="${pageContext.request.contextPath}/">MEMORY GAME</a>
 		</div>
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li class="active"><a
+				<li ><a
 					href="${pageContext.request.contextPath}/">Home</a></li>
 				<%-- 		<c:if test="${username != null}">
 					<li><a href="${pageContext.request.contextPath}/matchHistory">Match
@@ -32,6 +32,7 @@
 							history</a></li>
 					<li class="divider"></li>
 				</c:if>
+				<li><a href="${pageContext.request.contextPath}/rules">Rules</a></li>
 				
 
 				<%-- 			<li class="dropdown"><a href="#" class="dropdown-toggle"
@@ -51,14 +52,14 @@
 						<li><a href="${pageContext.request.contextPath}/rules">Rules</a></li>
 					</ul></li> --%>
 			</ul>
-			<c:if test="${user != null}">
+			<%-- <c:if test="${user != null}">
 				<form class="navbar-form navbar-left" role="search">
 					<div class="form-group">
 						<input type="text" class="form-control" placeholder="Search">
 					</div>
 					<button type="submit" class="btn btn-default">Submit</button>
 				</form>
-			</c:if>
+			</c:if> --%>
 			<%-- <c:if test="${username == null}">
 		<a href="${pageContext.request.contextPath}/login">Login</a>
 	</c:if>
