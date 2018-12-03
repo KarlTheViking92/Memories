@@ -62,6 +62,8 @@ public class GameController {
 				System.out.println("Tutto bene creo la partita con GAMEID " + gameID);
 //				model.addAttribute("game", gameID);
 				session.setAttribute("game", gameID);
+				session.removeAttribute("lobby");
+				lobbyService.removeLobby(lobbyPlayer.getName());
 				try {
 					eventService.addEvent(lobbyPlayer.getName(), lobbyEvent, "gameStarted");
 				} catch (InterruptedException e) {
@@ -84,6 +86,7 @@ public class GameController {
 		session.setAttribute("game", myGame.getGameID());
 		model.addAttribute("cards", gameService.getCards((String) session.getAttribute("game")));
 		model.addAttribute("inGame", "true");
+		session.removeAttribute("lobby");
 		System.out.println("END GET GAME CONTROLLER");
 		return "memory";
 	}
@@ -102,8 +105,8 @@ public class GameController {
 		if (result.equals("win")) {
 			System.out.println("Ha vinto " + ((Player) session.getAttribute("user")).getUsername());
 			try {
-				eventService.addEvent(game.getGameID(), gameEvent, "finishGame");
 				gameService.saveGame(gameService.getGameByID(gameID));
+				eventService.addEvent(game.getGameID(), gameEvent, "finishGame");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

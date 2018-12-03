@@ -1,5 +1,19 @@
 body{margin-top:20px;}
 
+.avatar {
+	width : 20%;
+}
+
+.joinButton{
+	font-size: 15px;
+}
+
+.create-form {
+	padding-left: 25%;
+	padding-right: 25%;
+	
+}
+
 /* USER LIST TABLE */
 .user-list tbody td > img {
     position: relative;

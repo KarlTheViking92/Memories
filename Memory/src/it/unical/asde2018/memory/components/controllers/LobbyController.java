@@ -36,20 +36,15 @@ public class LobbyController {
 	public String createNewLobby(@RequestParam String name, HttpSession session, Model model) {
 		// YOU HAVE TO SET THAT USER IS THE CREATOR
 		Player player = (Player) session.getAttribute("user");
-
-//		player.setCreator(true);
-//		session.setAttribute("user", player);
 		String test = lobbyService.createLobby(name, player);
 		System.out.println("test  ----->>>>> " + test);
 		model.addAttribute("createdLobby", "Lobby " + name + " has been created by " + player.getUsername());
 		session.setAttribute("lobby", lobbyService.getLobby(name));
 		try {
 			eventService.addEvent(name, lobbyEvent, "newLobby");
-//			eventService.addEvent(id, eventSource, type);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-//		model.addAttribute("lobbies", lobbyService.getLobbies()); //NO NEED ANYMORE
 		return "lobby";
 	}
 
@@ -59,7 +54,6 @@ public class LobbyController {
 
 		if (session.getAttribute("user") != null) {
 			Player user = (Player) session.getAttribute("user");
-//			System.out.println("get Lobby " + user.getUsername());
 			JSONObject lob = createLobbyJSON(session);
 			return lob.toJSONString();
 		}
@@ -73,15 +67,11 @@ public class LobbyController {
 		if (!lobbyService.fullLobby(lobbyName)) {
 			Player player = (Player) session.getAttribute("user");
 			lobbyService.joinLobby(lobbyName, player);
-//			Lobby lobby = lobbyService.getLobby(lobbyName);
 			try {
 				eventService.addEvent(lobbyName, lobbyEvent, "joined");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-//			model.addAttribute("players", lobbyService.getPlayers(name));
-//			model.addAttribute("nameLobby", name);
-
 			session.setAttribute("lobby", lobbyService.getLobby(lobbyName));
 			// session
 			return "lobby";
@@ -101,11 +91,14 @@ public class LobbyController {
 			if (lobbyService.leaveLobby(name, player)) {
 				System.out.println("EVENT " + lobbyEvent + " removed lobby " + session.getId());
 				eventService.addEvent(lobby.getName(), lobbyEvent, "removedLobby");
+				lobbyService.removeLobby(lobby.getName());
 //				eventService.addEvent(id, eventSource, type);
 			} else {
 				System.out.println("EVENT " + lobbyEvent + " left lobby " + session.getId());
 				eventService.addEvent(lobby.getName(), lobbyEvent, "leftLobby");
 			}
+			
+			session.removeAttribute("lobby");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

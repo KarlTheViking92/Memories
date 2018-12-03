@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -38,17 +39,17 @@ public class HomeController {
 		return "index";
 	}
 
-	@GetMapping("/registration")
+	@PostMapping("/registration")
 	private String registration(Model model, @RequestParam String username, @RequestParam String password) {
 		if (!loginService.yetAnUser(username)) {
 			loginService.savePlayer(username, password);
-			model.addAttribute("errorRegistration", username + " you are now registed, you can Sign in");
+			model.addAttribute("successRegistration", username + " you are now registed, you can Sign in");
 		} else
 			model.addAttribute("errorRegistration", username + " has already been chosen has username");
 		return "index";
 	}
 
-	@GetMapping("/login")
+	@PostMapping("/login")
 	private String login(Model model, HttpSession session, @RequestParam String username,
 			@RequestParam String password) {
 		if (loginService.playerExists(username, password)) {
@@ -158,7 +159,7 @@ public class HomeController {
 //			System.out.println(player.getUsername());
 //		}
 
-		List<Game> gamesList = gameService.getGamesOfAUser((Player)session.getAttribute("user"));
+/*		List<Game> gamesList = gameService.getGamesOfAUser((Player)session.getAttribute("user"));
 		for (Game game : gamesList) {
 			System.out.println("----------------------------------------------------------");
 			System.out.println(game);
@@ -166,14 +167,14 @@ public class HomeController {
 			System.out.println("------------------------");
 		}
 		model.addAttribute("gamesOfUser",gamesList);
-
-//		System.out.println("Lista delle partite: ");
-//		List<Game> allGames = gameService.getAllGames();
-//		for (Game game : allGames) {
-//			System.out.println("----------------------------------------------------------");
-//			System.out.println(game);
-//			System.out.println("------------------------");
-//		}
+*/
+		System.out.println("Lista delle partite: ");
+		List<Game> allGames = gameService.getAllGames();
+		for (Game game : allGames) {
+			System.out.println("----------------------------------------------------------");
+			System.out.println(game);
+			System.out.println("------------------------");
+		}
 
 //		List<Impiegato> impiegati= progImpService.listaImpiegati();
 //		for (Impiegato impiegato : impiegati) {
