@@ -10,6 +10,7 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,16 +26,17 @@ public class LobbyController {
 
 	@Autowired
 	LobbyService lobbyService;
-	
+
 	@Autowired
 	EventService eventService;
-	
+
 	private final static String gameEvent = "game";
 	private final static String lobbyEvent = "lobby";
-	
+
 	@RequestMapping("/createNewLobby")
 	public String createNewLobby(@RequestParam String name, HttpSession session, Model model) {
 		Player player = (Player) session.getAttribute("user");
+		lobbyService.createLobby(name, player);
 		model.addAttribute("createdLobby", "Lobby " + name + " has been created by " + player.getUsername());
 		session.setAttribute("lobby", lobbyService.getLobby(name));
 		try {
@@ -58,7 +60,6 @@ public class LobbyController {
 	@RequestMapping({ "/joinLobby" })
 	public String joinLobby(HttpServletRequest request, HttpSession session, Model model,
 			@RequestParam(value = "lobby", defaultValue = "") String lobbyName) {
-		System.out.println("JOIN LOBBY FUNCT " + lobbyName);
 		if (!lobbyService.fullLobby(lobbyName)) {
 			Player player = (Player) session.getAttribute("user");
 			lobbyService.joinLobby(lobbyName, player);
@@ -87,7 +88,7 @@ public class LobbyController {
 				lobbyService.removeLobby(lobby.getName());
 			} else {
 				eventService.addEvent(lobby.getName(), lobbyEvent, "leftLobby");
-			}		
+			}
 			session.removeAttribute("lobby");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -120,4 +121,41 @@ public class LobbyController {
 		obj.put("players", jsonArray);
 		return obj;
 	}
+
+	@GetMapping("/sendMessage")
+	@ResponseBody
+	public String sendMessageController(HttpServletRequest request, HttpSession session,
+			@RequestParam String idMessage) {
+		Lobby lobby = (Lobby) session.getAttribute("lobby");
+		Player player = (Player) session.getAttribute("user");
+		lobbyService.updateMessage(lobby.getName(), idMessage, player.getUsername());
+		try {
+			eventService.addEvent(lobby.getName(), lobbyEvent, "chat");
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return idMessage;
+	}
+
+	@PostMapping("/getMessage")
+	@ResponseBody
+	public String takeMessageController(HttpServletRequest request, HttpSession session) {
+		Lobby lobby = (Lobby) session.getAttribute("lobby");
+		Player player = (Player) session.getAttribute("user");
+		JSONObject obj = userChat(session);
+		return obj.toJSONString();
+	}
+
+	@SuppressWarnings("unchecked")
+	private JSONObject userChat(HttpSession session) {
+
+		JSONObject obj = new JSONObject();
+		Lobby lobby = (Lobby) session.getAttribute("lobby");
+		obj.put("user", lobby.getMessage().getUser());
+		obj.put("message", lobby.getMessage().getMessage());
+		obj.put("creator", lobby.getCreator().getUsername());
+		return obj;
+	}
+
 }

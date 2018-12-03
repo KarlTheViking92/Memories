@@ -26,11 +26,7 @@
 					<div class="chat-room">
 						<!-- start:aside kiri chat room -->
 						<aside class="kiri-side">
-							<div class="user-head">
-								<!-- 								<i class="fa fa-comments-o"></i>
- -->
-
-							</div>
+							<div class="user-head"></div>
 							<ul class="chat-list">
 								<li style="text-align: center"><h3>Utenti nalla Lobby</h3></li>
 								<li>
@@ -46,9 +42,8 @@
 								<li><a
 									href="${pageContext.request.contextPath}/leaveLobby?lobby=${lobby.name}"
 									class="table-link danger"><button style="font-size: 10px">
-											Leave Lobby <span class="fa-stack"><i class="fa fa-trash"
-												aria-hidden="true"></i> 
-											</span>
+											Leave Lobby <span class="fa-stack"><i
+												class="fa fa-trash" aria-hidden="true"></i> </span>
 										</button> </a></li>
 								<li><div class="col-sm-12" id="difficulty"
 										style="display: none">
@@ -83,17 +78,15 @@
 
 								<h3 style="text-align: center">${lobby.getName()}</h3>
 							</div>
-							<div class="group-rom">
-								<div class="first-part odd">Jonathan Smith</div>
-								<div class="second-part">Hello Cendy are you there?</div>
-								<div class="third-part">12:30</div>
-							</div>
-
+							<div class="group-rom" id="messageUpdate"></div>
 							<footer>
-								<div class="chat-txt">
-									<input type="text" class="form-control">
+
+								<div id="chat">
+									<input type="text" onfocus="this.value=''" id="sendMessage">
+									<button class="btn btn-danger" id="buttonMessage">Send</button>
 								</div>
-								<button class="btn btn-danger" data-original-title="" title="">Send</button>
+
+
 							</footer>
 						</aside>
 						<!-- end:aside tengah chat room -->

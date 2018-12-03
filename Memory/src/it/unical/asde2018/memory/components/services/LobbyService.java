@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
 
 import it.unical.asde2018.memory.model.Lobby;
+import it.unical.asde2018.memory.model.Message;
 import it.unical.asde2018.memory.model.Player;
 
 @Service
@@ -30,7 +31,13 @@ public class LobbyService {
 		}
 		return list;
 	}
+	public Message getMessage(String lobbyName) {
+		return lobby_map.get(lobbyName).getMessage();
+	}
 
+	public void updateMessage(String lobbyName, String message, String username) {
+		lobby_map.get(lobbyName).setMessage(new Message(message, username));
+	}
 	public Lobby getLobby(String name) {
 		return lobby_map.get(name);
 	}
@@ -44,7 +51,6 @@ public class LobbyService {
 	}
 
 	public void joinLobby(String name, Player player) {
-		System.out.println("player " + player.getUsername() + " vuole unirsi alla lobby " + name);
 		if(lobby_map.containsKey(name) && !lobby_map.get(name).full() ) {
 			lobby_map.get(name).joinLobby(player);
 		}

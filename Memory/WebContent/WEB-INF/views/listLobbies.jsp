@@ -37,46 +37,6 @@
 		<h1 align="center">Join a Lobby</h1>
 	</div>
 
-	<!-- 
-	<div class="container" style="background-color: lightgrey">
-		<div class="row">
-			<div class="col-lg-12">
-				<div class="main-box clearfix">
-					<div class="table-responsive">
-						<table class="table user-list">
-							<thead>
-								<tr>
-									<th><span>User</span></th>
-									<th><span>Lobby</span></th>
-									<th class="text-center"><span>Status Lobby</span></th>
-
-									<th>&nbsp;</th>
-								</tr>
-							</thead>
-							<tbody id="lobby-container">
-								<tr>
-									<td><img
-										src="https://bootdey.com/img/Content/avatar/avatar1.png"><span>Admin:qwe</span></td>
-									<td>asd</td>
-									<td class="text-center"><span class="label label-success">Players:1/2</span></td>
-									<td style="width: 20%;"><a
-										href="/Memory/joinLobby?lobby=asd" class="table-link"><button
-												style="font-size: 10px">
-												Join Lobby <span class="fa-stack"> <i
-													class="fa fa-square fa-stack-2x"></i> <i
-													class="fa fa-arrow-circle-up fa-stack-1x fa-inverse"></i></span>
-											</button></a></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
- -->
-	<%-- <a href="${pageContext.request.contextPath}/refreshLobby">REFRESH</a> --%>
 
 	<div class="limiter">
 		<div class="container-table100">

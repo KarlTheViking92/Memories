@@ -19,18 +19,14 @@
 <body>
 	<jsp:include page="navbar.jsp" />
 	<div class="container">
-		<section id="timer" >
+		<section id="timer">
 			<div id="timer-row" class="row" hidden="true">
 				<div
 					class="col-xs-12 col-sm-12 col-md-12 countdown-wrapper text-center mb20">
 					<div class="timer">
 						<div class="card-block">
 							<div id="countdown">
-							<!-- 	<span id="hour" class="timer bg-success"></span> 
-								<span id="min"
-									class="timer bg-info">
-								</span> --> <span id="sec"
-									class="timer bg-primary"></span>
+								<span id="sec" class="timer bg-primary"></span>
 							</div>
 						</div>
 					</div>
@@ -61,7 +57,5 @@
 			</c:forEach>
 		</div>
 	</div>
-	<!-- End Wrap -->
-	<%-- <h1>${gameId}</h1> --%>
 </body>
 </html>

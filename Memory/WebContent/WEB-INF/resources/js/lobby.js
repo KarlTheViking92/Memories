@@ -6,9 +6,7 @@ function updateLobby() {
 				contentType : 'application/json; charset=utf-8',
 				dataType : 'json',
 				success : function(data) {
-					console.log("AGGIORNO LOBBY");
-					console.log(data);
-				
+
 					var str = "";
 					var lobbySize = data.playerSize;
 					var game_button = $("#g_button");
@@ -17,18 +15,15 @@ function updateLobby() {
 						difficulty.css("display", "");
 						if (lobbySize == 2) {
 							game_button.css("display", "");
-						}else {
+						} else {
 							game_button.css("display", "none");
 						}
 					}
-					console.log(data.players);
 					for (var i = 0; i < data.players.length; i++) {
 						var p = data.players[i].player;
-						console.log(p);
-						str += "<a href=\"#chat-room.html\"><i class=\"fa fa-circle text-success\"></i>"
+						str += "<a href=\"#chat-room.html\"><i class=\"fa fa-circle text-success\"></i> "
 								+ p + "</a>";
 					}
-					// $(".chat-list").append(game_button);
 					$("#lobby-container").html(str);
 				},
 				error : function(jqXHR, exception) {
@@ -59,8 +54,6 @@ function checkGameStarted() {
 		type : "GET",
 		url : "checkGameStarted",
 		success : function(data) {
-			console.log("Return checkGameStarted");
-			console.log(data);
 			// var str = "";
 			if (data == "true") {
 				window.location.href = "./getGame";
@@ -91,7 +84,6 @@ function checkGameStarted() {
 }
 
 function getEventsFromServer() {
-	console.log("lobby get events from server");
 	$.ajax({
 		type : "GET",
 		url : "getEvents",
@@ -100,22 +92,21 @@ function getEventsFromServer() {
 		},
 		success : function(result) {
 			setTimeout(function() {
-//				console.log("result ajax lobby getevents");
-				console.log(result);
 				if (result == "joined" || result == "leftLobby") {
 					updateLobby();
 				}
-				if(result=="removedLobby"){
-					console.log(myContextPath+"/refreshLists");
-					var controller = myContextPath+"/refreshLists";
-					window.location = controller ;
+				if (result == "removedLobby") {
+					var controller = myContextPath + "/refreshLists";
+					window.location = controller;
 
 				}
 				if (result == "gameStarted") {
-					console.log("YEAH");
 					checkGameStarted();
 				}
-				
+				if (result == "chat") {
+					getMessage();
+				}
+
 				getEventsFromServer();
 			}, 1000);
 		},
@@ -144,9 +135,84 @@ function getEventsFromServer() {
 		}
 	});
 }
+
+function getMessage() {
+	$.ajax({
+		type : "POST",
+		url : "getMessage",
+		contentType : 'application/json; charset=utf-8',
+		dataType : 'json',
+		success : function(response) {
+			var str = "";
+			var cUser = response.user;
+			str += "<div class=\"first-part odd\" >" + cUser
+					+ "</div> <div class=\"second-part\">" + response.message
+					+ "</div>";
+			$("#messageUpdate").append(str);
+		},
+		error : function(jqXHR, exception) {
+			console.log("ERRORE NEL GET MESSAGE");
+			var msg = '';
+			if (jqXHR.status === 0) {
+				msg = 'Not connect.\n Verify Network.';
+			} else if (jqXHR.status == 404) {
+				msg = 'Requested page not found. [404]';
+			} else if (jqXHR.status == 500) {
+				msg = 'Internal Server Error [500].';
+			} else if (exception === 'parsererror') {
+				msg = 'Requested JSON parse failed.';
+			} else if (exception === 'timeout') {
+				msg = 'Time out error.';
+			} else if (exception === 'abort') {
+				msg = 'Ajax request aborted.';
+			} else {
+				msg = 'Uncaught Error.\n' + jqXHR.responseText;
+			}
+			console.log(msg);
+		}
+	});
+}
+
 $(document).ready(function() {
+	$("#buttonMessage").on("click", function() {
+		$.ajax({
+			type : "GET",
+			url : "sendMessage",
+			data : {
+
+				"idMessage" : $("#sendMessage").val()
+			},
+			success : function(data) {
+				txt = data;
+				$("#sendMessage").val('');
+				// str+="<div class=\"first-part odd\">"++"</div><div
+				// class=\"second-part\" id=\"getMessage\"></div>";
+			},
+			error : function(jqXHR, exception) {
+				console.log("ERRORE GET EVENTS LOBBYJS");
+				var msg = '';
+				if (jqXHR.status === 0) {
+					msg = 'Not connect.\n Verify Network.';
+				} else if (jqXHR.status == 404) {
+					msg = 'Requested page not found. [404]';
+				} else if (jqXHR.status == 500) {
+					msg = 'Internal Server Error [500].';
+				} else if (exception === 'parsererror') {
+					msg = 'Requested JSON parse failed.';
+				} else if (exception === 'timeout') {
+					msg = 'Time out error.';
+				} else if (exception === 'abort') {
+					msg = 'Ajax request aborted.';
+				} else {
+					msg = 'Uncaught Error.\n' + jqXHR.responseText;
+				}
+				console.log(msg);
+			}
+
+		});
+	});
+
 	$("#createGame").on("click", function() {
-		console.log("call CREATE GAME");
 		var lobby = $("#lobby-name").text();
 		var difficulty = $('#difficulty input:radio:checked').val();
 		$.ajax({
@@ -156,7 +222,6 @@ $(document).ready(function() {
 				"difficulty" : difficulty
 			},
 			success : function(response) {
-				console.log("response " + response);
 				window.location.href = "./" + response;
 			},
 			error : function(jqXHR, exception) {

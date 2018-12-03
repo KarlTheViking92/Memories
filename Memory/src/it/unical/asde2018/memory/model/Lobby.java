@@ -5,13 +5,11 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import it.unical.asde2018.memory.components.serializer.LobbySerializer;
-
-@JsonSerialize(using = LobbySerializer.class)
 public class Lobby {
 
 	private String name;
 	private List<Player> players;
+	private Message message;
 	private Player creator;
 	private int maxNumPlayer;
 
@@ -50,6 +48,14 @@ public class Lobby {
 
 	public Player getCreator() {
 		return creator;
+	}
+
+	public Message getMessage() {
+		return message;
+	}
+
+	public void setMessage(Message message) {
+		this.message = message;
 	}
 
 }

@@ -18,40 +18,16 @@
 			<ul class="nav navbar-nav">
 				<li class="active"><a
 					href="${pageContext.request.contextPath}/">Home</a></li>
-				<%-- 		<c:if test="${username != null}">
-					<li><a href="${pageContext.request.contextPath}/matchHistory">Match
-							history</a></li>
-				</c:if> --%>
 				<c:if test="${user.username != null and inGame !='true'}">
-			<%-- 		<li><a href="${pageContext.request.contextPath}/redirectList">List
-							lobbies</a></li> --%>
 					<li class="divider"></li>
 					<li><a href="${pageContext.request.contextPath}/matchHistory">Match
 							history</a></li>
 					<li class="divider"></li>
 				</c:if>
 				
-
-				<%-- 			<li class="dropdown"><a href="#" class="dropdown-toggle"
-					data-toggle="dropdown">More<span class="caret"></span></a>
-					<ul class="dropdown-menu" role="menu">
-						<c:if test="${user.username != null}">
-							<li><a href="${pageContext.request.contextPath}/createLobby">Create
-									a lobby</a></li>
-							<li><a href="${pageContext.request.contextPath}/joinListLobby">List
-									lobbies</a></li>
-							<li class="divider"></li>
-							<li><a
-								href="${pageContext.request.contextPath}/matchHistory">Match
-									history</a></li>
-							<li class="divider"></li>
-						</c:if>
-						<li><a href="${pageContext.request.contextPath}/rules">Rules</a></li>
-					</ul></li> --%>
 			</ul>
 
 			<c:if test="${user == null}">
-				<%-- <a href="${pageContext.request.contextPath}/login">Login</a> --%>
 				<ul class="nav navbar-nav navbar-right">
 				</ul>
 			</c:if>

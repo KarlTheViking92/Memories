@@ -66,6 +66,11 @@ public class HomeController {
 		return "index";
 	}
 	
+	/*@GetMapping("redirectList")
+	public String redirectList(HttpSession session, Model model) {
+//		model.addAttribute("lobbies", lobbyService.getLobbies());
+		return "listLobbies";
+	}*/
 
 	@RequestMapping("/logout")
 	public String logout(HttpSession session, Model model) {
@@ -82,7 +87,13 @@ public class HomeController {
 	@ResponseBody
 	public String getLobbyList(HttpSession session, Model model) throws JsonProcessingException {
 		if (session.getAttribute("user") != null) {
+//			User user = (User) session.getAttribute("user");
 			JSONArray lob = lobbyList(session);
+/*			List<Lobby> lobbies = lobbyService.getLobbies();
+			String lob = "[";
+			for (Lobby lobby : lobbies) {
+				lob += new ObjectMapper().writeValueAsString(lobby)+",";
+			}*/
 			return lob.toJSONString();
 		}
 		return null;
@@ -92,10 +103,10 @@ public class HomeController {
 	private JSONArray lobbyList(HttpSession session) {
 
 		JSONArray jsonArray = new JSONArray();
+//
 
 		Player cUser = (Player) session.getAttribute("user");
 		String currentUser = cUser.getUsername();
-
 		List<Lobby> lobbies = lobbyService.getLobbies();
 
 		for (Lobby lobby : lobbies) {
@@ -119,11 +130,16 @@ public class HomeController {
 		return jsonArray;
 	}
 
+//
 	@RequestMapping("/createLobby")
 	public String createLobby() {
 		return "createLobby";
 	}
 
+	/*
+	 * @RequestMapping({ "/startGame" }) public String joinLobby(HttpServletRequest
+	 * request, HttpSession session, Model model) { return "game"; }
+	 */
 
 	@RequestMapping("/rules")
 	public String rules(HttpSession session, Model model) {

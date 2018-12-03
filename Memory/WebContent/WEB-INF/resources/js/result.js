@@ -39,8 +39,6 @@ function updateResult() {
 		contentType : 'application/json; charset=utf-8',
 		dataType : 'json',
 		success : function(data) {
-			console.log("success result");
-			console.log(data);
 
 			var str = "";
 			for ( var o in data.players) {

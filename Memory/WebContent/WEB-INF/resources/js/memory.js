@@ -1,7 +1,6 @@
 var pause = false;
 
 function getEventsFromServer() {
-	console.log("lobby get events from server");
 	$.ajax({
 		type : "GET",
 		url : "getEvents",
@@ -10,15 +9,15 @@ function getEventsFromServer() {
 		},
 		success : function(result) {
 			setTimeout(function() {
-				// console.log("result ajax lobby getevents");
-				console.log(result);
 				if (result == "finishGame") {
-					console.log("this game is over");
 					$.ajax({
 						url:"saveResults",
 						type : "GET",
 					});
-					window.location.href = "./result";
+					
+					setTimeout(() => {
+						window.location.href = "./result";
+					}, 3000);
 				}
 
 				getEventsFromServer();
@@ -53,12 +52,9 @@ function getEventsFromServer() {
 $(document).ready(function() {
 	var sec = 0;
 	$(".card").on("click", function() {
-		console.log("clicco la carta");
 		var $card = $(this);
-		console.log($card);
 		var clickedCard = $(".card").find(".picked:not(.matched)").length;
 		var selected = $(".card").find(".selected").parent().attr("data-counter");
-		console.log("pause var " + pause);
 		if (selected != $card.attr("data-counter") && !pause) {
 			$.ajax({
 				type : "POST",
@@ -68,7 +64,6 @@ $(document).ready(function() {
 					"position" : $card.attr("data-counter")
 				},
 				success : function(data) {
-					console.log("data is " + data);
 					switch (data) {
 					case "selected":
 						$card.find(".inside").addClass("picked");
@@ -100,29 +95,15 @@ $(document).ready(function() {
 					case "not-permitted":
 						break;
 					}
-					// $card.find(".inside").addClass("picked");
 				},
 				error : function() {
 					console.log("Ajax Error");
 				}
 			});
 		}
-		/*
-		 * if($card.find(".inside").hasClass("picked")){ console.log("ciao
-		 * ciao"); $card.find(".inside").removeClass("picked"); } else{
-		 * console.log("ciao"); $card.find(".inside").addClass("picked"); }
-		 */
 	});
 	getEventsFromServer();
 	setInterval(function time() {
-		/*
-		 * var d = new Date(); var hours =d.getHours(); var min =
-		 * d.getMinutes(); if ((min + '').length == 1) { min = '0' + min; }
-		 * 
-		 * if ((sec + '').length == 1) { sec = '0' + sec; }
-		 */
-		// jQuery('#countdown #hour').html(hours);
-		// jQuery('#countdown #min').html(min);
 		jQuery('#countdown #sec').html(sec);
 		sec++;
 	}, 1000);

@@ -62,6 +62,7 @@ public class GameController {
 				}
 				return "getGame";
 			} else {
+				System.out.println("lobby non piena");
 			}
 		}
 		return "";
@@ -114,13 +115,13 @@ public class GameController {
 	@ResponseBody
 	public String checkGameStarted(HttpSession session, Model model) {
 		Player player = (Player) session.getAttribute("user");
-		System.out.println("CHECK GAME " + player.getUsername());
 		return gameService.gameReady(player.getUsername());
 	}
 	
 	@GetMapping("/getResult")
 	@ResponseBody
 	public String getResults(HttpSession session, Model model) {
+		saveAndDeleteGame(session, model);
 		String tmp = (String) session.getAttribute("resultLastGame");
 		return tmp;
 	}
@@ -165,7 +166,6 @@ public class GameController {
 		}
 		try {
 			String event = eventService.nextEvent(session.getId(), eventTarget, eventSource);
-			Player attribute = (Player) session.getAttribute("user");
 			output.setResult(event);
 		} catch (InterruptedException e) {
 			e.printStackTrace();

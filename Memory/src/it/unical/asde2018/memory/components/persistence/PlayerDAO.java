@@ -18,7 +18,6 @@ public class PlayerDAO {
 	private SessionFactory sessionFactory;
 
 	public void savePlayer(Player player) {
-		System.out.println("Player DAO " + player);
 		Session session = sessionFactory.openSession();
 		Transaction transaction = null;
 		try {
