@@ -103,6 +103,8 @@ public class GameController {
 			System.out.println("Ha vinto " + ((Player) session.getAttribute("user")).getUsername());
 			try {
 				eventService.addEvent(game.getGameID(), gameEvent, "finishGame");
+				//MIGLIORARE
+				gameService.getGameByID(gameID).setTime();;
 				gameService.saveGame(gameService.getGameByID(gameID));
 			} catch (InterruptedException e) {
 				e.printStackTrace();

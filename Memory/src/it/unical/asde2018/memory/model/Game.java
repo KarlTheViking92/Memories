@@ -112,8 +112,8 @@ public class Game {
 		return time;
 	}
 
-	public void setTime(Long time) {
-		this.time = time;
+	public void setTime() {
+		this.time = getResultTime();
 	}
 
 	public List<GameMatch> getGamelist() {

@@ -23,12 +23,15 @@ public class GameDAO {
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
-			session.persist(game);
+			session.save(game);
 			transaction.commit();
 		} catch (Exception e) {
 			transaction.rollback();
+			throw e;
 		}
-		session.close();
+		finally{
+	        session.close();
+	    }
 	}
 
 	public List<Game> getGamesOfAUser(Player player) {

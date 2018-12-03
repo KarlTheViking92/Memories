@@ -28,7 +28,9 @@ public class PlayerDAO {
 		} catch (Exception e) {
 			transaction.rollback();
 		}
-		session.close();
+		finally{
+	        session.close();
+	    }
 	}
 	
 	public boolean exists(String username, String password) {

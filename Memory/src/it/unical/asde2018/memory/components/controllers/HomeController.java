@@ -161,14 +161,11 @@ public class HomeController {
 		}
 		System.out.println("UTENTI------STOP");
 
-//		List<Game> gamesList = gameService.getGamesOfAUser((Player)session.getAttribute("user"));
+		List<Game> gamesList = gameService.getGamesOfAUser((Player)session.getAttribute("user"));
 //		for (Game game : gamesList) {
-//			System.out.println("----------------------------------------------------------");
-//			System.out.println(game);
-//			System.out.println(game.getWinner());
-//			System.out.println("------------------------");
+//			if(game.getWinner())
 //		}
-//		model.addAttribute("gamesOfUser",gamesList);
+		model.addAttribute("gamesOfUser",gamesList);
 
 		System.out.println("PARITE------START");
 		List<Game> allGames = gameService.getAllGames();
