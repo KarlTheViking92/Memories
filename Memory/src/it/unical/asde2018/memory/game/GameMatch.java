@@ -31,21 +31,15 @@ public class GameMatch {
 	}
 
 	public String pick(int id, int count) {
-		System.out.println("chiamo la funzione e ho " + (picked_card.size()+1));
 		List<MyImage> selected = memory.getSelected();
 		MyImage img = selected.get(count);
 		boolean test = false;
 		if (picked_card.size() < 2) {
-			System.out.println("inserisco la carta e ho " + (picked_card.size()+1));
 			picked_card.add(img);
 			test = true;
 		}
 
 		if (picked_card.size() == 2) {
-//			System.out.println("confronto " + picked_card.get(0).getName());
-//			System.out.println("con " + picked_card.get(1).getName());
-//			System.out.println("bool " + picked_card.get(0).equals(picked_card.get(1)));
-
 			if (picked_card.get(0).equals(picked_card.get(1))) {
 				picked_card.clear();
 				win_count += 1;
@@ -61,8 +55,6 @@ public class GameMatch {
 			return "selected";
 		else
 			return "not-permitted";
-
-//		return "";
 	}
 
 	public Player getPlayer() {

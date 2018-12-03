@@ -58,7 +58,6 @@ public class HomeController {
 		if (loginService.playerExists(username, password)) {
 			Long playerId = loginService.getPlayerId(username);
 			Player player = new Player(playerId,username,password);
-			System.out.println("creo il player " + player.getUsername() + " ---- " + player);
 			session.setAttribute("user", player);
 			model.addAttribute("lobbies", lobbyService.getLobbies());
 			return "listLobbies";
@@ -67,11 +66,6 @@ public class HomeController {
 		return "index";
 	}
 	
-	/*@GetMapping("redirectList")
-	public String redirectList(HttpSession session, Model model) {
-//		model.addAttribute("lobbies", lobbyService.getLobbies());
-		return "listLobbies";
-	}*/
 
 	@RequestMapping("/logout")
 	public String logout(HttpSession session, Model model) {
@@ -88,13 +82,7 @@ public class HomeController {
 	@ResponseBody
 	public String getLobbyList(HttpSession session, Model model) throws JsonProcessingException {
 		if (session.getAttribute("user") != null) {
-//			User user = (User) session.getAttribute("user");
 			JSONArray lob = lobbyList(session);
-/*			List<Lobby> lobbies = lobbyService.getLobbies();
-			String lob = "[";
-			for (Lobby lobby : lobbies) {
-				lob += new ObjectMapper().writeValueAsString(lobby)+",";
-			}*/
 			return lob.toJSONString();
 		}
 		return null;
@@ -104,13 +92,9 @@ public class HomeController {
 	private JSONArray lobbyList(HttpSession session) {
 
 		JSONArray jsonArray = new JSONArray();
-//
 
 		Player cUser = (Player) session.getAttribute("user");
 		String currentUser = cUser.getUsername();
-		// System.out.println(currentUser);
-//		JSONObject jsonCurrentUser = new JSONObject();
-//		jsonCurrentUser.put("currentUser", currentUser);
 
 		List<Lobby> lobbies = lobbyService.getLobbies();
 
@@ -119,7 +103,6 @@ public class HomeController {
 			jsonLobby.put("name", lobby.getName());
 			jsonLobby.put("playerSize", lobby.getNumberOfPlayers());
 			jsonLobby.put("currentUser", currentUser);
-//			System.out.println("Sono nel JSON " + lobby.getName() + " " + lobby.getLobbySize() + " " + currentUser);
 			JSONArray jsonPlayers = new JSONArray();
 			for (Player user : lobby.getPlayers()) {
 				JSONObject jsonPlayer = new JSONObject();
@@ -131,23 +114,16 @@ public class HomeController {
 			jsonLobby.put("userList", jsonPlayers);
 
 			jsonArray.add(jsonLobby);
-			// jsonArray.add(jsonCurrentUser);
-
 		}
 
 		return jsonArray;
 	}
 
-//
 	@RequestMapping("/createLobby")
 	public String createLobby() {
 		return "createLobby";
 	}
 
-	/*
-	 * @RequestMapping({ "/startGame" }) public String joinLobby(HttpServletRequest
-	 * request, HttpSession session, Model model) { return "game"; }
-	 */
 
 	@RequestMapping("/rules")
 	public String rules(HttpSession session, Model model) {
@@ -156,45 +132,8 @@ public class HomeController {
 
 	@RequestMapping("/matchHistory")
 	public String matchHistory(HttpSession session, Model model) {
-		System.out.println("ARRIVOOOOOOOOOOOOOOOoo");
-//		List<Player> playerList = loginService.getAllUsers();
-//		for (Player player : playerList) {
-//			System.out.println(player.getUsername());
-//		}
-
-/*		List<Game> gamesList = gameService.getGamesOfAUser((Player)session.getAttribute("user"));
-		for (Game game : gamesList) {
-			System.out.println("----------------------------------------------------------");
-			System.out.println(game);
-			System.out.println(game.getWinner());
-			System.out.println("------------------------");
-		}
+		List<Game> gamesList = gameService.getGamesOfAUser((Player)session.getAttribute("user"));
 		model.addAttribute("gamesOfUser",gamesList);
-*/
-		System.out.println("Lista delle partite: ");
-		List<Game> allGames = gameService.getAllGames();
-		for (Game game : allGames) {
-			System.out.println("----------------------------------------------------------");
-			System.out.println(game);
-			System.out.println("------------------------");
-		}
-
-//		List<Impiegato> impiegati= progImpService.listaImpiegati();
-//		for (Impiegato impiegato : impiegati) {
-//			System.out.println("+++");
-//			System.out.println(impiegato.getNome());
-//			System.out.println(impiegato.getProgetti());
-//		}
-//		List<Progetto> progetti= progImpService.listaProgetti();
-//		for (Progetto progetto : progetti) {
-//			System.out.println("---");
-//			System.out.println(progetto.getNome());
-//			System.out.println(progetto.getImpiegati());
-//		}
-
-
-
-		//	model.addAttribute("gamesList", gamesList);
 		return "matchHistory";
 	}
 

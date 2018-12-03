@@ -12,7 +12,6 @@ public class Lobby {
 
 	private String name;
 	private List<Player> players;
-	// Rivedere il creator
 	private Player creator;
 	private int maxNumPlayer;
 

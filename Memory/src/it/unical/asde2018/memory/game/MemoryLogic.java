@@ -41,7 +41,6 @@ public class MemoryLogic {
 		matrix = new Integer[rows][columns];
 		this.image_map = new HashMap<>();
 		this.selected_images = new ArrayList<>();
-		System.out.println("Before load images");
 		loadImages();
 
 		int count = 0;
@@ -56,27 +55,16 @@ public class MemoryLogic {
 				count++;
 			}
 		}
-		// duplicating images
 		image_picked.addAll(image_picked);
 
-		// shuffling list
 		Collections.shuffle(image_picked);
-		System.out.println("size " +image_picked.size());
 		int pos_counter = 0;
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
-				System.out.println("prelevo pos_counter " + pos_counter);
 				matrix[i][j] = image_picked.get(pos_counter);
 				selected_images.add(image_map.get(image_picked.get(pos_counter)));
 				pos_counter++;
 			}
-		}
-
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < columns; j++) {
-				System.out.print(matrix[i][j] + " ");
-			}
-			System.out.println();
 		}
 	}
 
@@ -103,11 +91,8 @@ public class MemoryLogic {
 	private void loadImages() {
 		JSONParser parser = new JSONParser();
 		try {
-//			Object obj = parser.parse(new FileReader("/resource/cards.json"));
 			File file = new ClassPathResource("cards.json").getFile();
 			Object obj = parser.parse(new FileReader(file));
-			System.out.println("Loading cards");
-
 			JSONArray array = (JSONArray) obj;
 
 			for (int i = 0; i < array.size(); i++) {
@@ -131,7 +116,4 @@ public class MemoryLogic {
 	public List<MyImage> getSelected(){
 		return selected_images;
 	}
-	/*public static void main(String[] args) {
-		MemoryLogic logic = new MemoryLogic(4);
-	}*/
 }

@@ -34,10 +34,7 @@ public class LobbyController {
 	
 	@RequestMapping("/createNewLobby")
 	public String createNewLobby(@RequestParam String name, HttpSession session, Model model) {
-		// YOU HAVE TO SET THAT USER IS THE CREATOR
 		Player player = (Player) session.getAttribute("user");
-		String test = lobbyService.createLobby(name, player);
-		System.out.println("test  ----->>>>> " + test);
 		model.addAttribute("createdLobby", "Lobby " + name + " has been created by " + player.getUsername());
 		session.setAttribute("lobby", lobbyService.getLobby(name));
 		try {
@@ -51,9 +48,7 @@ public class LobbyController {
 	@PostMapping("/getLobby")
 	@ResponseBody
 	public String getLobby(HttpSession session, Model model) {
-
 		if (session.getAttribute("user") != null) {
-			Player user = (Player) session.getAttribute("user");
 			JSONObject lob = createLobbyJSON(session);
 			return lob.toJSONString();
 		}
@@ -73,7 +68,6 @@ public class LobbyController {
 				e.printStackTrace();
 			}
 			session.setAttribute("lobby", lobbyService.getLobby(lobbyName));
-			// session
 			return "lobby";
 		} else {
 			model.addAttribute("errorLobby", lobbyName + " is full");
@@ -89,20 +83,15 @@ public class LobbyController {
 		Lobby lobby = (Lobby) session.getAttribute("lobby");
 		try {
 			if (lobbyService.leaveLobby(name, player)) {
-				System.out.println("EVENT " + lobbyEvent + " removed lobby " + session.getId());
 				eventService.addEvent(lobby.getName(), lobbyEvent, "removedLobby");
 				lobbyService.removeLobby(lobby.getName());
-//				eventService.addEvent(id, eventSource, type);
 			} else {
-				System.out.println("EVENT " + lobbyEvent + " left lobby " + session.getId());
 				eventService.addEvent(lobby.getName(), lobbyEvent, "leftLobby");
-			}
-			
+			}		
 			session.removeAttribute("lobby");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-//		model.addAttribute("lobbies", lobbyService.getLobbies());
 		return "listLobbies";
 	}
 
@@ -122,9 +111,7 @@ public class LobbyController {
 		obj.put("user", cUser.getUsername());
 		obj.put("creator", lobby.getCreator().getUsername());
 		obj.put("playerSize", lobby.getNumberOfPlayers());
-//		jsonArray.add(obj);
 		JSONArray jsonArray = new JSONArray();
-		System.out.println("lobby: " + lobby.getName());
 		for (Player player : players) {
 			JSONObject jsonPlayer = new JSONObject();
 			jsonPlayer.put("player", player.getUsername());

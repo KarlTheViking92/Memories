@@ -47,18 +47,11 @@ public class GameController {
 	@PostMapping("/createGame")
 	@ResponseBody
 	public String createGame(HttpSession session, Model model, @RequestParam String difficulty) {
-		System.out.println("CREATE GAME function");
 		Player player = (Player) session.getAttribute("user");
-		System.out.println(player.getUsername() + " vuole iniziare la partita ");
 		Lobby lobbyPlayer = lobbyService.getLobbyPlayer(player);
-		System.out.println("Voglio creare la partita per la lobby " + lobbyPlayer.getName());
-		System.out.println("l'ha creata " + lobbyPlayer.getCreator().getUsername());
 		if (lobbyPlayer.getCreator().equals(player)) {
-			System.out.println("il creatore vuole iniziare la partita");
 			if (lobbyPlayer.full()) {
 				String gameID = gameService.createGame(lobbyPlayer.getPlayers(), Difficulty.valueOf(difficulty));
-				System.out.println("Tutto bene creo la partita con GAMEID " + gameID);
-//				model.addAttribute("game", gameID);
 				session.setAttribute("game", gameID);
 				session.removeAttribute("lobby");
 				lobbyService.removeLobby(lobbyPlayer.getName());
@@ -67,10 +60,8 @@ public class GameController {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-//				model.addAttribute("cards", gameService.getCards(gameID));
 				return "getGame";
 			} else {
-				System.out.println("lobby non piena");
 			}
 		}
 		return "";
@@ -78,30 +69,23 @@ public class GameController {
 
 	@GetMapping("getGame")
 	public String getGame(HttpSession session, Model model) {
-		System.out.println("GET GAME CONTROLLER");
 		Player player = (Player) session.getAttribute("user");
 		Game myGame = gameService.getMyGame(player.getUsername());
 		session.setAttribute("game", myGame.getGameID());
 		model.addAttribute("cards", gameService.getCards((String) session.getAttribute("game")));
 		model.addAttribute("inGame", "true");
 		session.removeAttribute("lobby");
-		System.out.println("END GET GAME CONTROLLER");
 		return "memory";
 	}
 
 	@PostMapping("pickCard")
 	@ResponseBody
 	public String pickCard(HttpSession session, Model model, @RequestParam int imageId, @RequestParam int position) {
-//		System.out.println("pick card function");
-//		System.out.println("id : " + imageId);
-//		System.out.println("counter " + position);
 		String gameID = (String) session.getAttribute("game");
 		Game game = gameService.getGameByID(gameID);
-		System.out.println(game.getGameID());
 		String result = gameService.pickCard((String) session.getAttribute("game"),
 				(Player) session.getAttribute("user"), imageId, position);
 		if (result.equals("win")) {
-			System.out.println("Ha vinto " + ((Player) session.getAttribute("user")).getUsername());
 			try {
 				eventService.addEvent(game.getGameID(), gameEvent, "finishGame");
 				session.setAttribute("resultLastGame", getResultsJSON(session, model));
@@ -114,8 +98,6 @@ public class GameController {
 	
 	@GetMapping("saveResults")
 	public void asd(HttpSession session, Model model) {
-		System.out.println("salvo i risultati");
-		System.out.println("asdasdad "+ ((Player)session.getAttribute("user")).getUsername()  + " ---- "+ getResultsJSON(session, model) );
 		session.setAttribute("resultLastGame", getResultsJSON(session, model));
 	}
 	
@@ -139,9 +121,7 @@ public class GameController {
 	@GetMapping("/getResult")
 	@ResponseBody
 	public String getResults(HttpSession session, Model model) {
-//		saveAndDeleteGame(session, model);
 		String tmp = (String) session.getAttribute("resultLastGame");
-		System.out.println(tmp);
 		return tmp;
 	}
 
@@ -174,14 +154,7 @@ public class GameController {
 	@Async
 	public DeferredResult<String> getEvents(HttpSession session, @RequestParam String eventSource) {
 
-//		System.out.println("CALL GET EVENTS Controller");
-//		System.out.println("eventSource " + eventSource);
 		DeferredResult<String> output = new DeferredResult<>();
-//		ForkJoinPool.commonPool().submit(() -> {
-//
-//		});
-		System.out.println(
-				"chi cazzo � " + ((Player) session.getAttribute("user")).getUsername() + " +++ " + eventSource);
 		String eventTarget = "";
 		if (eventSource.equals(gameEvent)) {
 			eventTarget = (String) session.getAttribute("game");
@@ -191,14 +164,10 @@ public class GameController {
 			}
 		}
 		try {
-//			eventService.nextEvent(user_id, object_id, eventSource);
 			String event = eventService.nextEvent(session.getId(), eventTarget, eventSource);
 			Player attribute = (Player) session.getAttribute("user");
-			System.out.println(" preleva l'evento " + attribute.getUsername() + " --- per il target  " + eventTarget
-					+ " --- event " + event);
 			output.setResult(event);
 		} catch (InterruptedException e) {
-			System.out.println("event exception");
 			e.printStackTrace();
 			output.setResult("An error occurred during event retrieval");
 		}

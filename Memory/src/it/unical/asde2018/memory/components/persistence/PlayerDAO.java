@@ -61,7 +61,6 @@ public class PlayerDAO {
 	
 	public Long getPlayerIdDAO(String username) {
 		Session session = sessionFactory.openSession();
-		System.out.println("TRASU++++++++++++++++");
 		Query<Player> query = session.createQuery("FROM Player as p where p.username=:user",Player.class)
 				.setParameter("user", username);
 		Long playerID = query.uniqueResult().getId();

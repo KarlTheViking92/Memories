@@ -26,7 +26,6 @@ public class GameService {
 	
 	@PostConstruct
 	public void init() {
-		System.out.println("LOAD GAME SERVICE");
 		games = new HashMap<>();
 	}
 
@@ -38,7 +37,6 @@ public class GameService {
 	}
 
 	public List<MyImage> getCards(String gameID) {
-		System.out.println("GET CARDS");
 		return games.get(gameID).getCards();
 	}
 

@@ -50,8 +50,6 @@ public class LobbyService {
 		}
 	}
 
-	/* forse evitabile */
-
 	public boolean fullLobby(String name) {
 		return lobby_map.get(name).full();
 	}

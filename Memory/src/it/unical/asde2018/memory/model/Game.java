@@ -40,7 +40,6 @@ public class Game {
 	@Column(name = "game_id")
 	private String gameID;
 
-	//DA_CONTROLLARE
 	@ManyToMany(cascade = CascadeType.MERGE,fetch=FetchType.EAGER)
 	@JoinTable(name = "PLAYER_GAME",
 	joinColumns = { @JoinColumn(name = "game_id") },
@@ -75,7 +74,6 @@ public class Game {
 		this.gamelist = new ArrayList<>();
 		this.players = players;
 		init_time = new Date();
-		System.out.println(init_time);
 		MemoryLogic logic = new MemoryLogic(d.getDifficultyValue());
 		for (Player p : this.players) {
 			gamelist.add(new GameMatch(logic, p));
@@ -160,12 +158,9 @@ public class Game {
 			}
 		}
 		String pick = match.pick(imageId, position);
-		System.out.println("pick returns " + pick);
 		if (pick.equals("win")) {
 			winner = p.getId();
 			end_time = new Date();
-			System.out.println("l'utente " + p.getUsername() + " ha concluso in "
-					 + " secondi");
 		}
 
 		return pick;
