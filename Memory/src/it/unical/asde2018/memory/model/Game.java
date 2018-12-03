@@ -16,6 +16,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.Hibernate;
+
 import it.unical.asde2018.memory.game.GameMatch;
 import it.unical.asde2018.memory.game.MemoryLogic;
 
@@ -71,6 +73,7 @@ public class Game {
 
 	public Game(String gameID, List<Player> players, Difficulty d) {
 		super();
+		Hibernate.initialize(this.players);
 		this.gameID = gameID;
 		this.gamelist = new ArrayList<>();
 		this.players = players;
