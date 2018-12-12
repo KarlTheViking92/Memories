@@ -9,21 +9,21 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import it.unical.asde2018.memory.model.Credentials;
+import it.unical.asde2018.memory.model.User;
 
 @Repository
-public class CredentialsDAO {
+public class UserDAO {
 
 	@Autowired
 	private SessionFactory sessionFactory;
 
 	@PostConstruct
 	public void init() {
-		save(new Credentials("a", "a"));
-		save(new Credentials("s", "s"));
+		save(new User("a", "a"));
+		save(new User("s", "s"));
 	}
 
-	public void save(Credentials credentials) {
+	public void save(User credentials) {
 		Session session = sessionFactory.openSession();
 
 		Transaction tx = null;
@@ -39,10 +39,9 @@ public class CredentialsDAO {
 
 	}
 
-	public boolean exists(Credentials credentials) {
+	public boolean exists(User credentials) {
 		Session openSession = sessionFactory.openSession();
-		Query<Credentials> query = openSession
-				.createQuery("from Credentials as c where c.username=:u and c.password=:p", Credentials.class)
+		Query<User> query = openSession.createQuery("from User as c where c.username=:u and c.password=:p", User.class)
 				.setParameter("u", credentials.getUsername()).setParameter("p", credentials.getPassword());
 
 		boolean result = query.uniqueResult() != null;
@@ -53,8 +52,8 @@ public class CredentialsDAO {
 	public boolean yetAnUser(String username) {
 		Session session = sessionFactory.openSession();
 
-		Query<Credentials> query = session.createQuery("from Credentials as c where c.username=:u", Credentials.class)
-				.setParameter("u", username);
+		Query<User> query = session.createQuery("from User as c where c.username=:u", User.class).setParameter("u",
+				username);
 
 		boolean result = query.uniqueResult() != null;
 

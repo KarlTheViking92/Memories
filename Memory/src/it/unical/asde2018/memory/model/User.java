@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table
-public class Credentials {
+public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,11 +21,11 @@ public class Credentials {
 	@Column(nullable = false)
 	private String password;
 
-	public Credentials() {
+	public User() {
 		super();
 	}
 
-	public Credentials(String username, String password) {
+	public User(String username, String password) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -64,7 +64,7 @@ public class Credentials {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Credentials other = (Credentials) obj;
+		User other = (User) obj;
 		if (password == null) {
 			if (other.password != null)
 				return false;
